@@ -9,7 +9,7 @@
   <name>RankLib</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <mainClass>ciir.umass.edu.learning.Evaluator</mainClass>
+    <mainClass>ciir.umass.edu.eval.Evaluator</mainClass>
     <javaVersion>1.6</javaVersion>
   </properties>
 
