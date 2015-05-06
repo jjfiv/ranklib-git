@@ -67,7 +67,7 @@ public abstract class DataPoint {
 				description = text.substring(idx);
 				text = text.substring(0, idx).trim();//remove the comment part at the end of the line
 			}
-			String[] fs = text.split(" ");
+			String[] fs = text.split("\\s+");
 			label = Float.parseFloat(fs[0]);
 			if(label < 0)
 			{
@@ -107,8 +107,7 @@ public abstract class DataPoint {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in DataPoint::parse(): " + ex.toString());
-			System.exit(1);
+			throw new RuntimeException("Error in DataPoint::parse()", ex);
 		}
 		return fVals;
 	}

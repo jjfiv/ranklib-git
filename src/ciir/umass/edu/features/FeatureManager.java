@@ -185,8 +185,7 @@ public class FeatureManager {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in FeatureManager::readInput(): " + ex.toString());
-			System.exit(1);
+			throw new RuntimeException("Error in FeatureManager::readInput(): ", ex);
 		}
 		return samples;
 	}
