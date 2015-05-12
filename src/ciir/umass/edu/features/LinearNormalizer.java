@@ -9,10 +9,11 @@
 
 package ciir.umass.edu.features;
 
-import java.util.Arrays;
-
 import ciir.umass.edu.learning.DataPoint;
 import ciir.umass.edu.learning.RankList;
+import ciir.umass.edu.utilities.RankLibError;
+
+import java.util.Arrays;
 
 /**
  * @author Laura Dietz, vdang
@@ -23,8 +24,7 @@ public class LinearNormalizer extends Normalizer {
 	{
 		if(rl.size() == 0)
 		{
-			System.out.println("Error in LinearNormalizor::normalize(): The input ranked list is empty");
-			System.exit(1);
+      throw RankLibError.create("Error in LinearNormalizor::normalize(): The input ranked list is empty");
 		}
 		int nFeature = DataPoint.getFeatureCount();
         int[] fids = new int[nFeature];
@@ -37,8 +37,7 @@ public class LinearNormalizer extends Normalizer {
 	{
 		if(rl.size() == 0)
 		{
-			System.out.println("Error in LinearNormalizor::normalize(): The input ranked list is empty");
-			System.exit(1);
+      throw RankLibError.create("Error in LinearNormalizor::normalize(): The input ranked list is empty");
 		}
 		
 		//remove duplicate features from the input @fids ==> avoid normalizing the same features multiple times

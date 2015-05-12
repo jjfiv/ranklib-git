@@ -19,6 +19,7 @@ import ciir.umass.edu.learning.tree.MART;
 import ciir.umass.edu.learning.tree.RFRanker;
 import ciir.umass.edu.metric.MetricScorer;
 import ciir.umass.edu.utilities.FileUtils;
+import ciir.umass.edu.utilities.RankLibError;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -100,21 +101,18 @@ public class RankerFactory {
 	}
   public Ranker loadRankerFromString(String fullText)
   {
-    Ranker r = null;
-    try {
-      BufferedReader in = new BufferedReader(new StringReader(fullText));
+    try (BufferedReader in = new BufferedReader(new StringReader(fullText))) {
+			Ranker r;
       String content = in.readLine();//read the first line to get the name of the ranking algorithm
-      in.close();
       content = content.replace("## ", "").trim();
       System.out.println("Model:\t\t" + content);
       r = createRanker(map.get(content.toUpperCase()));
       r.loadFromString(fullText);
+			return r;
     }
     catch(Exception ex)
     {
-      System.out.println("Error in RankerFactory.loadRanker(): " + ex.toString());
-      System.exit(1);
+			throw RankLibError.create(ex);
     }
-    return r;
   }
 }

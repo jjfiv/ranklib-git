@@ -9,19 +9,18 @@
 
 package ciir.umass.edu.learning.tree;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
+import ciir.umass.edu.learning.DataPoint;
+import ciir.umass.edu.utilities.RankLibError;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import ciir.umass.edu.learning.DataPoint;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author vdang
@@ -61,7 +60,7 @@ public class Ensemble {
 				//create a regression tree from this node
 				Split root = create(n.getFirstChild(), fids);
 				//get the weight for this tree
-				float weight = Float.parseFloat(n.getAttributes().getNamedItem("weight").getNodeValue().toString());
+				float weight = Float.parseFloat(n.getAttributes().getNamedItem("weight").getNodeValue());
 				//add it to the ensemble
 				trees.add(new RegressionTree(root));
 				weights.add(weight);
@@ -73,8 +72,7 @@ public class Ensemble {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in Emsemble(xmlRepresentation): " + ex.toString());
-			System.exit(1);
+			throw RankLibError.create("Error in Emsemble(xmlRepresentation): ", ex);
 		}
 	}
 	
@@ -94,8 +92,7 @@ public class Ensemble {
 	public double variance()
 	{
 		double var = 0;
-		for(int i=0;i<trees.size();i++)
-			var += trees.get(i).variance();
+		for (RegressionTree tree : trees) var += tree.variance();
 		return var;
 	}
 	public void remove(int k)
@@ -110,8 +107,7 @@ public class Ensemble {
 	public int leafCount()
 	{
 		int count = 0;
-		for(int i=0;i<trees.size();i++)
-			count += trees.get(i).leaves().size();
+		for (RegressionTree tree : trees) count += tree.leaves().size();
 		return count;
 	}
 	public float eval(DataPoint dp)
@@ -149,16 +145,16 @@ public class Ensemble {
 		if(n.getFirstChild().getNodeName().compareToIgnoreCase("feature") == 0)//this is a split
 		{
 			NodeList nl = n.getChildNodes();
-			int fid = Integer.parseInt(nl.item(0).getFirstChild().getNodeValue().toString().trim());//<feature>
+			int fid = Integer.parseInt(nl.item(0).getFirstChild().getNodeValue().trim());//<feature>
 			fids.put(fid, 0);
-			float threshold = Float.parseFloat(nl.item(1).getFirstChild().getNodeValue().toString().trim());//<threshold>
+			float threshold = Float.parseFloat(nl.item(1).getFirstChild().getNodeValue().trim());//<threshold>
 			s = new Split(fid, threshold, 0);
 			s.setLeft(create(nl.item(2), fids));
 			s.setRight(create(nl.item(3), fids));
 		}
 		else//this is a stump
 		{
-			float output = Float.parseFloat(n.getFirstChild().getFirstChild().getNodeValue().toString().trim());
+			float output = Float.parseFloat(n.getFirstChild().getFirstChild().getNodeValue().trim());
 			s = new Split();
 			s.setOutput(output);
 		}

@@ -9,16 +9,18 @@
 
 package ciir.umass.edu.metric;
 
+import ciir.umass.edu.learning.RankList;
+import ciir.umass.edu.utilities.RankLibError;
+import ciir.umass.edu.utilities.Sorter;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import ciir.umass.edu.learning.RankList;
-import ciir.umass.edu.utilities.Sorter;
 
 /**
  * @author vdang
@@ -30,12 +32,12 @@ public class NDCGScorer extends DCGScorer {
 	public NDCGScorer()
 	{
 		super();
-		idealGains = new HashMap<String, Double>();
+		idealGains = new HashMap<>();
 	}
 	public NDCGScorer(int k)
 	{
 		super(k);
-		idealGains = new HashMap<String, Double>();
+		idealGains = new HashMap<>();
 	}
 	public MetricScorer clone()
 	{
@@ -44,9 +46,9 @@ public class NDCGScorer extends DCGScorer {
 	public void loadExternalRelevanceJudgment(String qrelFile)
 	{
 		//Queries with external relevance judgment will have their cached ideal gain value overridden 
-		try {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(qrelFile))))
+		{
 			String content = "";
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(qrelFile)));
 			String lastQID = "";
 			List<Integer> rel = new ArrayList<Integer>();
 			int nQueries = 0;
@@ -84,13 +86,10 @@ public class NDCGScorer extends DCGScorer {
 				rel.clear();
 				nQueries++;
 			}
-			in.close();
 			System.out.println("Relevance judgment file loaded. [#q=" + nQueries + "]");
+		} catch (IOException ex) {
+			throw RankLibError.create("Error in NDCGScorer::loadExternalRelevanceJudgment(): ", ex);
 		}
-		catch(Exception ex)
-		{
-			System.out.println("Error in NDCGScorer::loadExternalRelevanceJudgment(): " + ex.toString());
-		}		
 	}
 	
 	/**
@@ -111,7 +110,7 @@ public class NDCGScorer extends DCGScorer {
 		double ideal = 0;
 		Double d = idealGains.get(rl.getID());
 		if(d != null)
-			ideal = d.doubleValue();
+			ideal = d;
 		else
 		{
 			ideal = getIdealDCG(rel, size);
@@ -131,7 +130,7 @@ public class NDCGScorer extends DCGScorer {
 		double ideal = 0;
 		Double d = idealGains.get(rl.getID());
 		if(d != null)
-			ideal = d.doubleValue();
+			ideal = d;
 		else
 		{
 			ideal = getIdealDCG(rel, size);

@@ -9,6 +9,8 @@
 
 package ciir.umass.edu.learning;
 
+import ciir.umass.edu.utilities.RankLibError;
+
 import java.util.Arrays;
 
 /**
@@ -107,7 +109,7 @@ public abstract class DataPoint {
 		}
 		catch(Exception ex)
 		{
-			throw new RuntimeException("Error in DataPoint::parse()", ex);
+			throw RankLibError.create("Error in DataPoint::parse()", ex);
 		}
 		return fVals;
 	}

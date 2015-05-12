@@ -72,8 +72,7 @@ public class MyThreadPool extends ThreadPoolExecutor {
 			}
 			catch(Exception ex)
 			{
-				System.out.println("Error in MyThreadPool.await(): " + ex.toString());
-				System.exit(1);
+				throw RankLibError.create("Error in MyThreadPool.await(): ", ex);
 			}
 		}
 		for(int i=0;i<size;i++)
@@ -100,8 +99,7 @@ public class MyThreadPool extends ThreadPoolExecutor {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in MyThreadPool.execute(): " + ex.toString());
-			System.exit(1);
+			throw RankLibError.create("Error in MyThreadPool.execute(): ", ex);
 		}
 	}
 	protected void afterExecute(Runnable r, Throwable t)

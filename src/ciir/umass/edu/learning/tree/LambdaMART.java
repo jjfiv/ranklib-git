@@ -15,6 +15,7 @@ import ciir.umass.edu.learning.Ranker;
 import ciir.umass.edu.metric.MetricScorer;
 import ciir.umass.edu.utilities.MergeSorter;
 import ciir.umass.edu.utilities.MyThreadPool;
+import ciir.umass.edu.utilities.RankLibError;
 import ciir.umass.edu.utilities.SimpleMath;
 
 import java.io.BufferedReader;
@@ -324,7 +325,7 @@ public class LambdaMART extends Ranker {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in LambdaMART::load(): " + ex.toString());
+			throw RankLibError.create("Error in LambdaMART::load(): ", ex);
 		}
 	}
 	public void printParameters()

@@ -13,6 +13,7 @@ import ciir.umass.edu.learning.DataPoint;
 import ciir.umass.edu.learning.RankList;
 import ciir.umass.edu.learning.Ranker;
 import ciir.umass.edu.metric.MetricScorer;
+import ciir.umass.edu.utilities.RankLibError;
 import ciir.umass.edu.utilities.SimpleMath;
 
 import java.io.BufferedReader;
@@ -228,7 +229,7 @@ public class ListNet extends RankNet {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in ListNet::load(): " + ex.toString());
+			throw RankLibError.create("Error in ListNet::load(): ", ex);
 		}
 	}
 	public void printParameters()

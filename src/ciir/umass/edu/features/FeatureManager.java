@@ -14,6 +14,7 @@ import ciir.umass.edu.learning.DenseDataPoint;
 import ciir.umass.edu.learning.RankList;
 import ciir.umass.edu.learning.SparseDataPoint;
 import ciir.umass.edu.utilities.FileUtils;
+import ciir.umass.edu.utilities.RankLibError;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -111,8 +112,8 @@ public class FeatureManager {
 				}
 				catch(Exception ex)
 				{
-					System.out.println("Error: Cannot save partition data.");				
-					System.out.println("Occured in FeatureManager::main(): " + ex.toString());
+					throw RankLibError.create("Cannot save partition data.\n" +
+							"Occured in FeatureManager::main(): ", ex);
 				}
 			}
 		}
@@ -185,7 +186,7 @@ public class FeatureManager {
 		}
 		catch(Exception ex)
 		{
-			throw new RuntimeException("Error in FeatureManager::readInput(): ", ex);
+			throw RankLibError.create("Error in FeatureManager::readInput(): ", ex);
 		}
 		return samples;
 	}
@@ -213,9 +214,8 @@ public class FeatureManager {
 	{
 		int[] features = null;
 		List<String> fids = new ArrayList<String>();
-		try {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(featureDefFile)))) {
 			String content = "";
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(featureDefFile)));			
 			while((content = in.readLine()) != null)
 			{
 				content = content.trim();
@@ -230,10 +230,9 @@ public class FeatureManager {
 			for(int i=0;i<fids.size();i++)
 				features[i] = Integer.parseInt(fids.get(i));
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-			System.out.println("Error in FeatureManager::readFeature(): " + ex.toString());
-			System.exit(1);
+			throw RankLibError.create("Error in FeatureManager::readFeature(): ", ex);
 		}
 		return features;
 	}
@@ -248,8 +247,7 @@ public class FeatureManager {
 	{
 		if(samples.size() == 0)
 		{
-			System.out.println("Error in FeatureManager::getFeatureFromSampleVector(): There are no training samples.");
-			System.exit(1);
+			throw RankLibError.create("Error in FeatureManager::getFeatureFromSampleVector(): There are no training samples.");
 		}
 		int fc = DataPoint.getFeatureCount();
 		int[] features = new int[fc];
@@ -386,14 +384,12 @@ public class FeatureManager {
 	{
 		try{
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
-			for(int j=0;j<samples.size();j++)
-				save(samples.get(j), out);
+			for (RankList sample : samples) save(sample, out);
 			out.close();	
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in FeatureManager::save(): " + ex.toString());
-			System.exit(1);
+			throw RankLibError.create("Error in FeatureManager::save(): ", ex);
 		}
 	}
 	/**

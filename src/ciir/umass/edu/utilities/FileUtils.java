@@ -9,16 +9,7 @@
 
 package ciir.umass.edu.utilities;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -80,7 +71,7 @@ public class FileUtils {
 		}
 		catch(Exception ex)
 		{
-			System.out.println(ex.toString());
+			throw RankLibError.create(ex);
 		}
 		return lines;
 	}
@@ -150,30 +141,18 @@ public class FileUtils {
 	 */
 	public static void copyFile(String srcFile, String dstFile)
 	{
-		try {
-		    FileInputStream fis  = new FileInputStream(new File(srcFile));
-		    FileOutputStream fos = new FileOutputStream(new File(dstFile));
-		    try
-		    {
-		    	byte[] buf = new byte[40960];
-		    	int i = 0;
-		    	while ((i = fis.read(buf)) != -1) {
-		    		fos.write(buf, 0, i);
-		    	}
-		    } 
-		    catch (Exception e)
-		    {
-		    	System.out.println("Error in FileUtils.copyFile: " + e.toString());
-		    }
-		    finally
-		    {
-		    	if (fis != null) fis.close();
-		    	if (fos != null) fos.close();
-		    }
-		}
-		catch(Exception ex)
+		try (FileInputStream fis  = new FileInputStream(new File(srcFile));
+				 FileOutputStream fos = new FileOutputStream(new File(dstFile)))
 		{
-			System.out.println("Error in FileUtils.copyFile: " + ex.toString());
+			byte[] buf = new byte[40960];
+			int i = 0;
+			while ((i = fis.read(buf)) != -1) {
+				fos.write(buf, 0, i);
+			}
+		}
+		catch (IOException e)
+		{
+			throw RankLibError.create("Error in FileUtils.copyFile: ", e);
 		}
 	}
 	/**
@@ -184,8 +163,7 @@ public class FileUtils {
 	 */
 	public static void copyFiles(String srcDir, String dstDir, List<String> files)
 	{
-		for(int i=0;i<files.size();i++)
-			FileUtils.copyFile(srcDir+files.get(i), dstDir+files.get(i));
+		for (String file : files) FileUtils.copyFile(srcDir + file, dstDir + file);
 	}
 	public static final int BUF_SIZE = 51200;
     /**

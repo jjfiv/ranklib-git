@@ -9,13 +9,15 @@
 
 package ciir.umass.edu.metric;
 
+import ciir.umass.edu.learning.RankList;
+import ciir.umass.edu.utilities.RankLibError;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import ciir.umass.edu.learning.RankList;
 
 /**
  * @author vdang
@@ -37,10 +39,9 @@ public class APScorer extends MetricScorer {
 	}
 	public void loadExternalRelevanceJudgment(String qrelFile)
 	{
-		relDocCount = new HashMap<String, Integer>();
-		try {
+		relDocCount = new HashMap<>();
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(qrelFile)))) {
 			String content = "";
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(qrelFile)));
 			String lastQID = "";
 			int rdCount = 0;//relevant document count (per query)
 			while((content = in.readLine()) != null)
@@ -62,12 +63,11 @@ public class APScorer extends MetricScorer {
 					rdCount++;
 			}
 			relDocCount.put(lastQID, rdCount);
-			in.close();
 			System.out.println("Relevance judgment file loaded. [#q=" + relDocCount.keySet().size() + "]");
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-			System.out.println("Error in APScorer::loadExternalRelevanceJudgment(): " + ex.toString());
+			throw RankLibError.create("Error in APScorer::loadExternalRelevanceJudgment(): ", ex);
 		}		
 	}
 	/**
@@ -93,7 +93,7 @@ public class APScorer extends MetricScorer {
 		{
 			Integer it = relDocCount.get(rl.getID());
 			if(it != null)
-				rdCount = it.intValue();
+				rdCount = it;
 		}
 		else //no qrel-file specified, we can only use the #relevant-docs in the training file
 			rdCount = count;
@@ -128,7 +128,7 @@ public class APScorer extends MetricScorer {
 		{
 			Integer it = relDocCount.get(rl.getID());
 			if(it != null)
-				rdCount = it.intValue();
+				rdCount = it;
 		}
 		else
 			rdCount = count;

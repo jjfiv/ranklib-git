@@ -12,6 +12,7 @@ package ciir.umass.edu.learning;
 import ciir.umass.edu.metric.MetricScorer;
 import ciir.umass.edu.utilities.KeyValuePair;
 import ciir.umass.edu.utilities.MergeSorter;
+import ciir.umass.edu.utilities.RankLibError;
 import ciir.umass.edu.utilities.SimpleMath;
 
 import java.io.BufferedReader;
@@ -280,6 +281,7 @@ public class CoorAscent extends Ranker {
 				break;
 			}
 			in.close();
+			assert(kvp != null);
 			
 			List<String> keys = kvp.keys();
 			List<String> values = kvp.values();
@@ -293,7 +295,7 @@ public class CoorAscent extends Ranker {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in CoorAscent::load(): " + ex.toString());
+			throw RankLibError.create("Error in CoorAscent::load(): ", ex);
 		}
 	}
 	public void printParameters()

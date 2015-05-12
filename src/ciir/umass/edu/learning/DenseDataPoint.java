@@ -1,5 +1,7 @@
 package ciir.umass.edu.learning;
 
+import ciir.umass.edu.utilities.RankLibError;
+
 public class DenseDataPoint extends DataPoint {
 
 	public DenseDataPoint(String text) {
@@ -21,9 +23,7 @@ public class DenseDataPoint extends DataPoint {
 	{
 		if(fid <= 0 || fid >= fVals.length)
 		{
-			System.out.println("Error in DataPoint::getFeatureValue(): requesting unspecified feature, fid=" + fid);
-			System.out.println("System will now exit.");
-			System.exit(1);
+			throw RankLibError.create("Error in DenseDataPoint::getFeatureValue(): requesting unspecified feature, fid=" + fid);
 		}
 		if(isUnknown(fVals[fid]))//value for unspecified feature is 0
 			return 0;
@@ -35,8 +35,7 @@ public class DenseDataPoint extends DataPoint {
 	{
 		if(fid <= 0 || fid >= fVals.length)
 		{
-			System.out.println("Error in DataPoint::setFeatureValue(): feature (id=" + fid + ") not found.");
-			System.exit(1);
+			throw RankLibError.create("Error in DenseDataPoint::setFeatureValue(): feature (id=" + fid + ") not found.");
 		}
 		fVals[fid] = fval;
 	}

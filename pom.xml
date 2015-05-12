@@ -10,7 +10,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <mainClass>ciir.umass.edu.eval.Evaluator</mainClass>
-    <javaVersion>1.6</javaVersion>
+    <javaVersion>1.7</javaVersion>
   </properties>
 
   <distributionManagement>

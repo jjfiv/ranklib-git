@@ -1,16 +1,18 @@
 package ciir.umass.edu.eval;
 
+import ciir.umass.edu.stats.RandomPermutationTest;
+import ciir.umass.edu.utilities.FileUtils;
+import ciir.umass.edu.utilities.RankLibError;
+import ciir.umass.edu.utilities.SimpleMath;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import ciir.umass.edu.stats.RandomPermutationTest;
-import ciir.umass.edu.utilities.FileUtils;
-import ciir.umass.edu.utilities.SimpleMath;
 
 public class Analyzer {
 
@@ -47,7 +49,7 @@ public class Analyzer {
 		//a.compare("output/", "ca.feature.base");
 	}
 
-	class Result {
+	static class Result {
 		int status = 0;//success
 		int win = 0;
 		int loss = 0;
@@ -82,9 +84,9 @@ public class Analyzer {
 	public HashMap<String, Double> read(String filename)
 	{
 		HashMap<String, Double> performance = new HashMap<String, Double>();		
-		try {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename))))
+		{
 			String content = "";
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
 			while((content = in.readLine()) != null)
 			{
 				content = content.trim();
@@ -92,7 +94,7 @@ public class Analyzer {
 					continue;
 				
 				//expecting: id [space]* metric-text [space]* performance
-				while(content.indexOf("  ") != -1)
+				while(content.contains("  "))
 					content = content.replace("  ", " ");
 				content = content.replace(" ", "\t");
 				String[] s = content.split("\t");
@@ -104,10 +106,9 @@ public class Analyzer {
 			in.close();
 			System.out.println("Reading " + filename + "... " + performance.size() + " ranked lists [Done]");
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-			System.out.println("Error in Analyzer::read(): " + ex.toString());
-			System.exit(1);
+			throw RankLibError.create(ex);
 		}
 		return performance;
 	}
@@ -159,8 +160,8 @@ public class Analyzer {
 		{
 			if(rs[i].status == 0)
 			{
-				double delta = targets.get(i).get("all").doubleValue() - base.get("all").doubleValue();
-				double dp = delta*100/base.get("all").doubleValue();
+				double delta = targets.get(i).get("all") - base.get("all");
+				double dp = delta*100/ base.get("all");
 				String msg = FileUtils.getFileName(targetFiles.get(i)) + "\t" + SimpleMath.round(targets.get(i).get("all").doubleValue(), 4);
 				msg += "\t" + ((delta>0)?"+":"") + SimpleMath.round(delta, 4) + " (" + ((delta>0)?"+":"") + SimpleMath.round(dp, 2) + "%)";
 				msg += "\t" + rs[i].win + "\t" + rs[i].loss;
@@ -243,8 +244,8 @@ public class Analyzer {
 			}
 			if(key.compareTo("all") == 0)
 				continue;
-			double p = base.get(key).doubleValue();
-			double pt = target.get(key).doubleValue();
+			double p = base.get(key);
+			double pt = target.get(key);
 			if(pt > p)
 				r.win++;
 			else if(pt < p)

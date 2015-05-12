@@ -14,6 +14,7 @@ import ciir.umass.edu.learning.RankList;
 import ciir.umass.edu.learning.Ranker;
 import ciir.umass.edu.metric.MetricScorer;
 import ciir.umass.edu.utilities.MergeSorter;
+import ciir.umass.edu.utilities.RankLibError;
 import ciir.umass.edu.utilities.SimpleMath;
 
 import java.io.BufferedReader;
@@ -63,8 +64,7 @@ public class RankBoost extends Ranker {
 		double[] score = new double[rl.size()];
 		for(int i=0;i<rl.size();i++)
 			score[i] = rl.get(i).getFeatureValue(fid);
-		int[] idx = MergeSorter.sort(score, false); 
-		return idx;
+		return MergeSorter.sort(score, false);
 	}
 	
 	/**
@@ -402,8 +402,8 @@ public class RankBoost extends Ranker {
 			}
 			in.close();
 			
-			rWeight = new ArrayList<Double>();
-			wRankers = new ArrayList<RBWeakRanker>();
+			rWeight = new ArrayList<>();
+			wRankers = new ArrayList<>();
 			
 			int idx = content.lastIndexOf("#");
 			if(idx != -1)//remove description at the end of the line (if any)
@@ -429,7 +429,7 @@ public class RankBoost extends Ranker {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in RankBoost::load(): " + ex.toString());
+			throw RankLibError.create("Error in RankBoost::load(): ", ex);
 		}
 	}
 	public void printParameters()

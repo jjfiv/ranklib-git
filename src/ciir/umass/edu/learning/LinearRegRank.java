@@ -11,6 +11,7 @@ package ciir.umass.edu.learning;
 
 import ciir.umass.edu.metric.MetricScorer;
 import ciir.umass.edu.utilities.KeyValuePair;
+import ciir.umass.edu.utilities.RankLibError;
 import ciir.umass.edu.utilities.SimpleMath;
 
 import java.io.BufferedReader;
@@ -165,7 +166,7 @@ public class LinearRegRank extends Ranker {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in LinearRegRank::load(): " + ex.toString());
+			throw RankLibError.create("Error in LinearRegRank::load(): ", ex);
 		}
 	}
 	public void printParameters()

@@ -14,6 +14,7 @@ import ciir.umass.edu.learning.RankList;
 import ciir.umass.edu.learning.Ranker;
 import ciir.umass.edu.metric.MetricScorer;
 import ciir.umass.edu.utilities.KeyValuePair;
+import ciir.umass.edu.utilities.RankLibError;
 import ciir.umass.edu.utilities.SimpleMath;
 
 import java.io.BufferedReader;
@@ -73,25 +74,21 @@ public class AdaRank extends Ranker {
 	{
 		double bestScore = -1.0;
 		WeakRanker bestWR = null;
-		for(int k=0;k<features.length;k++)
-		{
-			int i = features[k];
-			if(featureQueue.contains(i))
+		for (int i : features) {
+			if (featureQueue.contains(i))
 				continue;
-			
-			if(usedFeatures.get(i)!=null)
+
+			if (usedFeatures.get(i) != null)
 				continue;
-			
+
 			WeakRanker wr = new WeakRanker(i);
 			double s = 0.0;
-			for(int j=0;j<samples.size();j++)
-			{
+			for (int j = 0; j < samples.size(); j++) {
 				double t = scorer.score(wr.rank(samples.get(j))) * sweight[j];
 				s += t;
 			}
-			
-			if(bestScore < s)
-			{
+
+			if (bestScore < s) {
 				bestScore = s;
 				bestWR = wr;
 			}
@@ -101,7 +98,7 @@ public class AdaRank extends Ranker {
 	private int learn(int startIteration, boolean withEnqueue)
 	{
 		int t = startIteration;
-		for(;t<=nIteration;t++)
+		for(; t<=nIteration; t++)
 		{
 			PRINT(new int[]{7}, new String[]{t+""});
 			
@@ -149,10 +146,9 @@ public class AdaRank extends Ranker {
 			double trainedScore = 0.0;
 			//update the distribution of sample weight
 			double total = 0.0;
-			for(int i=0;i<samples.size();i++)
-			{
-				double tmp = scorer.score(rank(samples.get(i)));
-				total += Math.exp(-alpha_t*tmp);
+			for (RankList sample : samples) {
+				double tmp = scorer.score(rank(sample));
+				total += Math.exp(-alpha_t * tmp);
 				trainedScore += tmp;
 			}
 			trainedScore /= samples.size();
@@ -317,9 +313,8 @@ public class AdaRank extends Ranker {
 	}
 	public void loadFromString(String fullText)
 	{
-		try {
+		try (BufferedReader in = new BufferedReader(new StringReader(fullText))) {
 			String content = "";
-			BufferedReader in = new BufferedReader(new StringReader(fullText));
 
 			KeyValuePair kvp = null;
 			while((content = in.readLine()) != null)
@@ -332,12 +327,13 @@ public class AdaRank extends Ranker {
 				kvp = new KeyValuePair(content);
 				break;
 			}
-			in.close();
+
+			assert(kvp != null);
 			
 			List<String> keys = kvp.keys();
 			List<String> values = kvp.values();
-			rweight = new ArrayList<Double>();
-			rankers = new ArrayList<WeakRanker>();
+			rweight = new ArrayList<>();
+			rankers = new ArrayList<>();
 			features = new int[keys.size()];
 			for(int i=0;i<keys.size();i++)
 			{
@@ -348,7 +344,7 @@ public class AdaRank extends Ranker {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in AdaRank::load(): " + ex.toString());
+			throw RankLibError.create("Error in AdaRank::load(): ", ex);
 		}
 	}
 	public void printParameters()

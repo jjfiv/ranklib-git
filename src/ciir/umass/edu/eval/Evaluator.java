@@ -22,10 +22,7 @@ import ciir.umass.edu.metric.ERRScorer;
 import ciir.umass.edu.metric.METRIC;
 import ciir.umass.edu.metric.MetricScorer;
 import ciir.umass.edu.metric.MetricScorerFactory;
-import ciir.umass.edu.utilities.FileUtils;
-import ciir.umass.edu.utilities.MergeSorter;
-import ciir.umass.edu.utilities.MyThreadPool;
-import ciir.umass.edu.utilities.SimpleMath;
+import ciir.umass.edu.utilities.*;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -245,9 +242,7 @@ public class Evaluator {
 					Evaluator.nml = new LinearNormalizer();
 				else
 				{
-					System.out.println("Unknown normalizor: " + n);
-					System.out.println("System will now exit.");
-					System.exit(1);
+					throw RankLibError.create("Unknown normalizor: " + n);
 				}
 			}
 			else if(args[i].compareTo("-sparse")==0)
@@ -367,9 +362,7 @@ public class Evaluator {
 					RFRanker.rType = rType2[rt];
 				else
 				{
-					System.out.println(rType[rt] + " cannot be bagged. Random Forests only supports MART/LambdaMART.");
-					System.out.println("System will now exit.");
-					System.exit(1);      
+					throw RankLibError.create(rType[rt] + " cannot be bagged. Random Forests only supports MART/LambdaMART.");
 				}
 			}
 			
@@ -394,9 +387,7 @@ public class Evaluator {
 				mustHaveRelDoc = true;
 			else
 			{
-				System.out.println("Unknown command-line parameter: " + args[i]);
-				System.out.println("System will now exit.");
-				System.exit(1);
+				throw RankLibError.create("Unknown command-line parameter: " + args[i]);
 			}
 		}
 
@@ -505,9 +496,9 @@ public class Evaluator {
 				}
 				else
 				{
-					System.out.println("This function has been removed.");
-					System.out.println("Consider using -score in addition to your current parameters, and do the ranking yourself based on these scores.");
-					System.exit(1);
+					throw RankLibError.create("This function has been removed.\n" +
+							"Consider using -score in addition to your current parameters, " +
+							"and do the ranking yourself based on these scores.");
 					//e.rank(savedModelFile, rankFile);
 				}
 			}
@@ -909,9 +900,8 @@ public class Evaluator {
 		double rankScore = 0.0;
 		List<String> ids = new ArrayList<String>();
 		List<Double> scores = new ArrayList<Double>();
-		for(int i=0;i<test.size();i++)
-		{
-			RankList l = ranker.rank(test.get(i));
+		for (RankList aTest : test) {
+			RankList l = ranker.rank(aTest);
 			double score = testScorer.score(l);
 			ids.add(l.getID());
 			scores.add(score);
@@ -1020,10 +1010,10 @@ public class Evaluator {
 	 */
 	public void testWithScoreFile(String testFile, String scoreFile)
 	{
-		try {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(scoreFile), "ASCII"))) {
 			List<RankList> test = readInput(testFile);
 			String content = "";
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(scoreFile), "ASCII"));
+			;
 			List<Double> scores = new ArrayList<Double>();
 			while((content = in.readLine()) != null)
 			{
@@ -1046,10 +1036,8 @@ public class Evaluator {
 			
 			double rankScore = evaluate(null, test);
 			System.out.println(testScorer.name() + " on test data: " + SimpleMath.round(rankScore, 4));
-		}
-		catch(Exception ex)
-		{
-			System.out.println(ex.toString());
+		} catch (IOException e) {
+			throw RankLibError.create(e);
 		}
 	}
 
@@ -1080,9 +1068,9 @@ public class Evaluator {
 			}
 			out.close();
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-			System.out.println("Error in Evaluator::rank(): " + ex.toString());
+			throw RankLibError.create("Error in Evaluator::rank(): ", ex);
 		}
 	}
 	/**
@@ -1111,21 +1099,18 @@ public class Evaluator {
 				int[] features = ranker.getFeatures();
 				if(normalize)
 					normalize(test, features);
-				for(int i=0;i<test.size();i++)
-				{
-					RankList l = test.get(i);
-					for(int j=0;j<l.size();j++)
-					{
-						out.write(l.getID() + "\t" + j + "\t" + ranker.eval(l.get(j))+"");
+				for (RankList l : test) {
+					for (int j = 0; j < l.size(); j++) {
+						out.write(l.getID() + "\t" + j + "\t" + ranker.eval(l.get(j)) + "");
 						out.newLine();
 					}
 				}
 			}
 			out.close();
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-			System.out.println("Error in Evaluator::score(): " + ex.toString());
+			throw RankLibError.create("Error in Evaluator::score(): ", ex);
 		}
 	}
 	/**
@@ -1137,8 +1122,7 @@ public class Evaluator {
 	public void score(List<String> modelFiles, List<String> testFiles, String outputFile)
 	{
 		int nFold = modelFiles.size();
-		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "ASCII"));
+		try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "ASCII"))) {
 			for(int f=0;f<nFold;f++)
 			{
 				List<RankList> test = FeatureManager.readInput(testFiles.get(f));
@@ -1146,21 +1130,17 @@ public class Evaluator {
 				int[] features = ranker.getFeatures();
 				if(normalize)
 					normalize(test, features);
-				for(int i=0;i<test.size();i++)
-				{
-					RankList l = test.get(i);
-					for(int j=0;j<l.size();j++)
-					{
-						out.write(l.getID() + "\t" + j + "\t" + ranker.eval(l.get(j))+"");
+				for (RankList l : test) {
+					for (int j = 0; j < l.size(); j++) {
+						out.write(l.getID() + "\t" + j + "\t" + ranker.eval(l.get(j)) + "");
 						out.newLine();
 					}
 				}
 			}
-			out.close();
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-			System.out.println("Error in Evaluator::score(): " + ex.toString());
+			throw RankLibError.create("Error in Evaluator::score(): ", ex);
 		}
 	}
 	/**
@@ -1178,26 +1158,23 @@ public class Evaluator {
 			normalize(test, features);
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "ASCII"));
-			for(int i=0;i<test.size();i++)
-			{
-				RankList l = test.get(i);
+			for (RankList l : test) {
 				double[] scores = new double[l.size()];
-				for(int j=0;j<l.size();j++)
+				for (int j = 0; j < l.size(); j++)
 					scores[j] = ranker.eval(l.get(j));
 				int[] idx = MergeSorter.sort(scores, false);
-				for(int j=0;j<idx.length;j++)
-				{
+				for (int j = 0; j < idx.length; j++) {
 					int k = idx[j];
-					String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " + (j+1) + " " + SimpleMath.round(scores[k], 5) + " indri";
+					String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " + (j + 1) + " " + SimpleMath.round(scores[k], 5) + " indri";
 					out.write(str);
 					out.newLine();
 				}
 			}
 			out.close();
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-			System.out.println("Error in Evaluator::rank(): " + ex.toString());
+			throw RankLibError.create("Error in Evaluator::rank(): ", ex);
 		}
 	}
 	/**
@@ -1210,21 +1187,18 @@ public class Evaluator {
 		List<RankList> test = readInput(testFile);
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "ASCII"));
-			for(int i=0;i<test.size();i++)
-			{
-				RankList l = test.get(i);
-				for(int j=0;j<l.size();j++)
-				{
-					String str = l.getID() + " Q0 " + l.get(j).getDescription().replace("#", "").trim() + " " + (j+1) + " " + SimpleMath.round(1.0 - 0.0001*j, 5) + " indri";
+			for (RankList l : test) {
+				for (int j = 0; j < l.size(); j++) {
+					String str = l.getID() + " Q0 " + l.get(j).getDescription().replace("#", "").trim() + " " + (j + 1) + " " + SimpleMath.round(1.0 - 0.0001 * j, 5) + " indri";
 					out.write(str);
 					out.newLine();
 				}
 			}
 			out.close();
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-			System.out.println("Error in Evaluator::rank(): " + ex.toString());
+			throw RankLibError.create("Error in Evaluator::rank(): ", ex);
 		}
 	}
 	/**
@@ -1253,18 +1227,15 @@ public class Evaluator {
 				int[] features = ranker.getFeatures();
 				if(normalize)
 					normalize(test, features);
-				
-				for(int i=0;i<test.size();i++)
-				{
-					RankList l = test.get(i);
+
+				for (RankList l : test) {
 					double[] scores = new double[l.size()];
-					for(int j=0;j<l.size();j++)
+					for (int j = 0; j < l.size(); j++)
 						scores[j] = ranker.eval(l.get(j));
 					int[] idx = MergeSorter.sort(scores, false);
-					for(int j=0;j<idx.length;j++)
-					{
+					for (int j = 0; j < idx.length; j++) {
 						int k = idx[j];
-						String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " + (j+1) + " " + SimpleMath.round(scores[k], 5) + " indri";
+						String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " + (j + 1) + " " + SimpleMath.round(scores[k], 5) + " indri";
 						out.write(str);
 						out.newLine();
 					}
@@ -1274,7 +1245,7 @@ public class Evaluator {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in Evaluator::rank(): " + ex.toString());
+			throw RankLibError.create("Error in Evaluator::rank(): ", ex);
 		}
 	}	
 	/**
@@ -1295,18 +1266,15 @@ public class Evaluator {
 				int[] features = ranker.getFeatures();
 				if(normalize)
 					normalize(test, features);
-				
-				for(int i=0;i<test.size();i++)
-				{
-					RankList l = test.get(i);
+
+				for (RankList l : test) {
 					double[] scores = new double[l.size()];
-					for(int j=0;j<l.size();j++)
+					for (int j = 0; j < l.size(); j++)
 						scores[j] = ranker.eval(l.get(j));
 					int[] idx = MergeSorter.sort(scores, false);
-					for(int j=0;j<idx.length;j++)
-					{
+					for (int j = 0; j < idx.length; j++) {
 						int k = idx[j];
-						String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " + (j+1) + " " + SimpleMath.round(scores[k], 5) + " indri";
+						String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " + (j + 1) + " " + SimpleMath.round(scores[k], 5) + " indri";
 						out.write(str);
 						out.newLine();
 					}
@@ -1314,9 +1282,9 @@ public class Evaluator {
 			}
 			out.close();
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-			System.out.println("Error in Evaluator::rank(): " + ex.toString());
+			throw RankLibError.create("Error in Evaluator::rank(): ", ex);
 		}
 	}
 
@@ -1352,20 +1320,17 @@ public class Evaluator {
 	 */
 	public void savePerRankListPerformanceFile(List<String> ids, List<Double> scores, String prpFile)
 	{
-		try{
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prpFile)));
+		try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prpFile)))) {
 			for(int i=0;i<ids.size();i++)
 			{
 				//out.write(testScorer.name() + "   " + ids.get(i) + "   " + SimpleMath.round(scores.get(i), 4));
 				out.write(testScorer.name() + "   " + ids.get(i) + "   " + scores.get(i));
 				out.newLine();
 			}
-			out.close();	
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in Evaluator::savePerRankListPerformanceFile(): " + ex.toString());
-			System.exit(1);
+			throw RankLibError.create("Error in Evaluator::savePerRankListPerformanceFile(): ", ex);
 		}
 	}
 }

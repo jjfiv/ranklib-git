@@ -13,6 +13,7 @@ import ciir.umass.edu.learning.DataPoint;
 import ciir.umass.edu.learning.RankList;
 import ciir.umass.edu.learning.Ranker;
 import ciir.umass.edu.metric.MetricScorer;
+import ciir.umass.edu.utilities.RankLibError;
 import ciir.umass.edu.utilities.SimpleMath;
 
 import java.io.BufferedReader;
@@ -229,7 +230,7 @@ public class RankNet extends Ranker {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in NeuralNetwork.restoreBestModelOnValidation(): " + ex.toString());
+			throw RankLibError.create("Error in NeuralNetwork.restoreBestModelOnValidation(): ", ex);
 		}
 	}
 	protected double crossEntropy(double o1, double o2, double targetValue)
@@ -456,7 +457,7 @@ public class RankNet extends Ranker {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error in RankNet::load(): " + ex.toString());
+			throw RankLibError.create("Error in RankNet::load(): ", ex);
 		}
 	}
 	public void printParameters()
