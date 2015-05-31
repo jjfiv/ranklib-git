@@ -350,7 +350,7 @@ public class CoorAscent extends Ranker {
 	}
 	private double getDistance(double[] w1, double[] w2)
 	{
-		//ASSERT w1.length = w2.length
+		assert(w1.length == w2.length);
 		double s1 = 0.0;
 		double s2 = 0.0;
 		for(int i=0;i<w1.length;i++)
