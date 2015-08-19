@@ -1,5 +1,6 @@
+
 /*===============================================================================
- * Copyright (c) 2010-2012 University of Massachusetts.  All Rights Reserved.
+ * Copyright (c) 2010-2015 University of Massachusetts.  All Rights Reserved.
  *
  * Use of the RankLib package is subject to the terms of the software license set 
  * forth in the LICENSE file included with this software, and also available at
@@ -18,6 +19,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import java.util.Set;
+
+//- Some Java 7 file utilities for creating directories
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+
+
 
 /**
  * @author vdang
@@ -73,6 +86,7 @@ public abstract class Ranker {
 	{
 		return bestScoreOnValidationData;
 	}
+
 	public int[] getFeatures()
 	{
 		return features;
@@ -86,6 +100,7 @@ public abstract class Ranker {
 		int[] idx = MergeSorter.sort(scores, false);
 		return new RankList(rl, idx);
 	}
+
 	public List<RankList> rank(List<RankList> l)
 	{
 		List<RankList> ll = new ArrayList<RankList>();
@@ -93,8 +108,25 @@ public abstract class Ranker {
 			ll.add(rank(l.get(i)));
 		return ll;
 	}
+
+        //- Create the model file directory to write models into if not already there
 	public void save(String modelFile) 
 	{
+              // Determine if the directory to write to exists.  If not, create it.
+              Path parentPath = Paths.get(modelFile).toAbsolutePath().getParent();
+            
+              // Create the directory if it doesn't exist. Give it 755 perms
+                if (Files.notExists (parentPath)) {
+                     try {
+                          Set<PosixFilePermission> perms = PosixFilePermissions.fromString ("rwxr-xr-x");
+                          FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute (perms);
+                          Path outputDir = Files.createDirectory (parentPath, attr);
+                     }
+                     catch (Exception e) {
+                          System.out.println ("Error creating kcv model file directory " + modelFile);
+		     }         
+                }
+            
 		FileUtils.write(modelFile, "ASCII", model());
 	}
 	
@@ -103,11 +135,13 @@ public abstract class Ranker {
 		if(verbose)
 			System.out.print(msg);
 	}
+
 	protected void PRINTLN(String msg)
 	{
 		if(verbose)
 			System.out.println(msg);
 	}
+
 	protected void PRINT(int[] len, String[] msgs)
 	{
 		if(verbose)
