@@ -1,5 +1,5 @@
 /*===============================================================================
- * Copyright (c) 2010-2012 University of Massachusetts.  All Rights Reserved.
+ * Copyright (c) 2010-2015 University of Massachusetts.  All Rights Reserved.
  *
  * Use of the RankLib package is subject to the terms of the software license set 
  * forth in the LICENSE file included with this software, and also available at
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
 
 /**
  * This class provides some file processing utilities such as read/write files, obtain files in a
@@ -269,7 +270,10 @@ public class FileUtils {
 		String dir = directory;
 		char c = dir.charAt(dir.length()-1);
 		if(c != '/' && c != '\\')
-			dir += File.pathSeparator;
+                    //- I THINK we want File.separator (/ or \) instead of 
+                    //  File.pathSeparator (: or ;) here.  Maybe needed for Analyzer?
+		    //dir += File.pathSeparator;
+		    dir += File.separator;
 		return dir;
 	}
 }
