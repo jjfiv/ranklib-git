@@ -1,5 +1,5 @@
 /*===============================================================================
- * Copyright (c) 2010-2012 University of Massachusetts.  All Rights Reserved.
+ * Copyright (c) 2010-2015 University of Massachusetts.  All Rights Reserved.
  *
  * Use of the RankLib package is subject to the terms of the software license set 
  * forth in the LICENSE file included with this software, and also available at
@@ -433,15 +433,19 @@ public class Evaluator {
 				System.out.println("Feature description file:\tUnspecified. All features will be used.");
 			System.out.println("Train metric:\t" + trainMetric);
 			System.out.println("Test metric:\t" + testMetric);
+
 			if(trainMetric.toUpperCase().startsWith("ERR") || testMetric.toUpperCase().startsWith("ERR"))
 				System.out.println("Highest relevance label (to compute ERR): " + (int)SimpleMath.logBase2(ERRScorer.MAX));
 			if(qrelFile.compareTo("") != 0)
 				System.out.println("TREC-format relevance judgment (only affects MAP and NDCG scores): " + qrelFile);
 			System.out.println("Feature normalization: " + ((Evaluator.normalize)?Evaluator.nml.name():"No"));
+
 			if(kcvModelDir.compareTo("")!=0)
 				System.out.println("Models directory: " + kcvModelDir);
+
 			if(kcvModelFile.compareTo("")!=0)
 				System.out.println("Models' name: " + kcvModelFile);				
+
 			if(modelFile.compareTo("")!=0)
 				System.out.println("Model file: " + modelFile);
 			//System.out.println("#threads:\t" + nThread);
@@ -456,9 +460,22 @@ public class Evaluator {
 			//starting to do some work
 			if(foldCV != -1)
 			{
-				if(kcvModelDir.compareTo("") != 0 && kcvModelFile.compareTo("") == 0)
-					kcvModelFile = "default";
-				e.evaluate(trainFile, featureDescriptionFile, foldCV, tvSplit, kcvModelDir, kcvModelFile);//models won't be saved if kcvModelDir="" 
+			        //if(kcvModelDir.compareTo("") != 0 && kcvModelFile.compareTo("") == 0)
+				//	kcvModelFile = "default";
+                                //
+                                //- Behavioral changes: Write kcv models if kcvmd OR kcvmn defined.  Use
+                                //  default names for missing arguments: "kcvmodels" default directory
+                                //  and "kcv" default model name.
+			        if (kcvModelDir.compareTo("") != 0 && kcvModelFile.compareTo("") == 0) {
+					kcvModelFile = "kcv";
+			        }
+                                else if(kcvModelDir.compareTo("") == 0 && kcvModelFile.compareTo("") != 0) {
+					kcvModelDir = "kcvmodels";  
+				}
+
+                                //- models won't be saved if kcvModelDir=""   [OBSOLETE]
+                                //- Models saved if EITHER kcvmd OR kcvmn defined.  Use default names for missing values.
+				e.evaluate(trainFile, featureDescriptionFile, foldCV, tvSplit, kcvModelDir, kcvModelFile);
 			}
 			else
 			{
