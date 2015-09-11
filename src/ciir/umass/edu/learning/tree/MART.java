@@ -33,7 +33,7 @@ public class MART extends LambdaMART {
 		super(samples, features, scorer);
 	}
 	
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new MART();
 	}

@@ -366,7 +366,7 @@ public class RankBoost extends Ranker {
 			score += rWeight.get(j) * wRankers.get(j).score(p);
 		return score;
 	}
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new RankBoost();
 	}

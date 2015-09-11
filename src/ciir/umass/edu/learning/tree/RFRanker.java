@@ -109,7 +109,7 @@ public class RFRanker extends Ranker {
 			s += ensembles[i].eval(dp);
 		return s/ensembles.length;
 	}
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new RFRanker();
 	}

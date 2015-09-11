@@ -51,8 +51,7 @@ public class RankerFactory {
 	}	
 	public Ranker createRanker(RANKER_TYPE type)
 	{
-		Ranker r = rFactory[type.ordinal() - RANKER_TYPE.MART.ordinal()].clone();
-		return r;
+		return rFactory[type.ordinal() - RANKER_TYPE.MART.ordinal()].createNew();
 	}
 	public Ranker createRanker(RANKER_TYPE type, List<RankList> samples, int[] features, MetricScorer scorer)
 	{

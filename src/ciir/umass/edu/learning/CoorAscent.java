@@ -18,6 +18,7 @@ import ciir.umass.edu.utilities.SimpleMath;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,8 +58,7 @@ public class CoorAscent extends Ranker {
 	{
 		PRINT("Initializing... ");
 		weight = new double[features.length];
-		for(int i=0;i<weight.length;i++)
-			weight[i] = 1.0f/features.length;
+		Arrays.fill(weight, 1.0 / features.length);
 		PRINTLN("[Done]");
 	}
 	public void learn()
@@ -239,7 +239,7 @@ public class CoorAscent extends Ranker {
 			score += weight[i] * p.getFeatureValue(features[i]);
 		return score;
 	}
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new CoorAscent();
 	}

@@ -190,7 +190,7 @@ public abstract class Ranker {
 		return -1.0;
 	}
 
-  public abstract Ranker clone();
+  public abstract Ranker createNew();
   public abstract String toString();
   public abstract String model();
   public abstract void loadFromString(String fullText);

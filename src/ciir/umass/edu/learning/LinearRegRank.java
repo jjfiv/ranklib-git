@@ -107,7 +107,7 @@ public class LinearRegRank extends Ranker {
 			score += weight[i] * p.getFeatureValue(features[i]);
 		return score;
 	}
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new LinearRegRank();
 	}

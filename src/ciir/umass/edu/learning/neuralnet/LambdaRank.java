@@ -128,7 +128,7 @@ public class LambdaRank extends RankNet {
 		lastError = error;
 	}
 	
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new LambdaRank();
 	}

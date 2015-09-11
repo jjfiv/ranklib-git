@@ -368,7 +368,7 @@ public class RankNet extends Ranker {
 			layers.get(k).computeOutput();		
 		return outputLayer.get(0).getOutput();
 	}	
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new RankNet();
 	}

@@ -281,7 +281,7 @@ public class LambdaMART extends Ranker {
 	{
 		return ensemble.eval(dp);
 	}	
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new LambdaMART();
 	}

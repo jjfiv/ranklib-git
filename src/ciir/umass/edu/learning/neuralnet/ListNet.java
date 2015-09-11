@@ -156,7 +156,7 @@ public class ListNet extends RankNet {
 	{
 		return super.eval(p);
 	}
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new ListNet();
 	}

@@ -290,7 +290,7 @@ public class AdaRank extends Ranker {
 			score += rweight.get(j) * p.getFeatureValue(rankers.get(j).getFID());
 		return score;
 	}
-	public Ranker clone()
+	public Ranker createNew()
 	{
 		return new AdaRank();
 	}
