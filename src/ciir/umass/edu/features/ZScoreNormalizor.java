@@ -62,7 +62,7 @@ public class ZScoreNormalizor extends Normalizer {
 	public void normalize(RankList rl, int[] fids) {
 		if(rl.size() == 0)
 		{
-			System.out.println("Error in SumNormalizor::normalize(): The input ranked list is empty");
+			System.out.println("Error in ZScoreNormalizor::normalize(): The input ranked list is empty");
 			System.exit(1);
 		}
 		
