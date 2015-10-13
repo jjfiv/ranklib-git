@@ -33,7 +33,7 @@ public class APScorer extends MetricScorer {
 	{
 		this.k = 0;//consider the whole list
 	}
-	public MetricScorer clone()
+	public MetricScorer copy()
 	{
 		return new APScorer();
 	}

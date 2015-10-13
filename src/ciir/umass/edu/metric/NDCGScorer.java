@@ -39,7 +39,7 @@ public class NDCGScorer extends DCGScorer {
 		super(k);
 		idealGains = new HashMap<>();
 	}
-	public MetricScorer clone()
+	public MetricScorer copy()
 	{
 		return new NDCGScorer();
 	}

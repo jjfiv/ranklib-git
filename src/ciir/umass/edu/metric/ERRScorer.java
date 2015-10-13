@@ -32,7 +32,7 @@ public class ERRScorer extends MetricScorer {
 	{
 		this.k = k;
 	}
-	public ERRScorer clone()
+	public ERRScorer copy()
 	{
 		return new ERRScorer();
 	}

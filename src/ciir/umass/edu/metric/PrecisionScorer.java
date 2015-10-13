@@ -41,7 +41,7 @@ public class PrecisionScorer extends MetricScorer {
 		}
 		return ((double)count)/size;
 	}
-	public MetricScorer clone()
+	public MetricScorer copy()
 	{
 		return new PrecisionScorer();
 	}

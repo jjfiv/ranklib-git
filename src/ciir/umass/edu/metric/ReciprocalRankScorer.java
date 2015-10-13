@@ -33,7 +33,7 @@ public class ReciprocalRankScorer extends MetricScorer {
 		}
 		return (firstRank==-1)?0:(1.0f/firstRank);
 	}
-	public MetricScorer clone()
+	public MetricScorer copy()
 	{
 		return new ReciprocalRankScorer();
 	}

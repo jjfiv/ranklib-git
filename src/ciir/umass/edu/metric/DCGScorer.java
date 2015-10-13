@@ -45,7 +45,7 @@ public class DCGScorer extends MetricScorer {
 				gain[i] = (1<<i) - 1;//2^i - 1
 		}
 	}
-	public MetricScorer clone()
+	public MetricScorer copy()
 	{
 		return new DCGScorer();
 	}

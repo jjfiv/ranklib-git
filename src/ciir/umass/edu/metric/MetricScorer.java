@@ -61,7 +61,7 @@ public abstract class MetricScorer {
 	}
 	
 	public abstract double score(RankList rl);
-	public abstract MetricScorer clone();
+	public abstract MetricScorer copy();
 	public abstract String name();
 	public abstract double[][] swapChange(RankList rl);
 }

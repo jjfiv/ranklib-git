@@ -31,11 +31,11 @@ public class MetricScorerFactory {
 	}
 	public MetricScorer createScorer(METRIC metric)
 	{
-		return mFactory[metric.ordinal() - METRIC.MAP.ordinal()].clone();
+		return mFactory[metric.ordinal() - METRIC.MAP.ordinal()].copy();
 	}
 	public MetricScorer createScorer(METRIC metric, int k)
 	{
-		MetricScorer s = mFactory[metric.ordinal() - METRIC.MAP.ordinal()].clone();
+		MetricScorer s = mFactory[metric.ordinal() - METRIC.MAP.ordinal()].copy();
 		s.setK(k);
 		return s;
 	}
@@ -48,11 +48,11 @@ public class MetricScorerFactory {
 		{
 			m = metric.substring(0, metric.indexOf("@"));
 			k = Integer.parseInt(metric.substring(metric.indexOf("@")+1));
-			s = map.get(m.toUpperCase()).clone();
+			s = map.get(m.toUpperCase()).copy();
 			s.setK(k);
 		}
 		else
-			s = map.get(metric.toUpperCase()).clone();
+			s = map.get(metric.toUpperCase()).copy();
 		return s;
 	}
 }
