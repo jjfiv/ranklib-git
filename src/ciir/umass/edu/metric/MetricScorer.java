@@ -9,26 +9,33 @@
 
 package ciir.umass.edu.metric;
 
-import java.util.List;
-
 import ciir.umass.edu.learning.RankList;
+
+import java.util.List;
 
 /**
  * @author vdang
  * A generic retrieval measure computation interface. 
  */
-public class MetricScorer {
+public abstract class MetricScorer {
 
+	/** The depth parameter, or how deep of a ranked list to use to score the measure. */
 	protected int k = 10;
 	
 	public MetricScorer() 
 	{
 		
 	}
+
+	/**
+	 * The depth parameter, or how deep of a ranked list to use to score the measure.
+	 * @param k the new depth for this measure.
+	 */
 	public void setK(int k)
 	{
 		this.k = k;
 	}
+	/** The depth parameter, or how deep of a ranked list to use to score the measure. */
 	public int getK()
 	{
 		return k;
@@ -53,25 +60,8 @@ public class MetricScorer {
 		return rel;
 	}
 	
-	/**
-	 * MUST BE OVER-RIDDEN
-	 * @param rl
-	 * @return
-	 */
-	public double score(RankList rl)
-	{
-		return 0.0;
-	}
-	public MetricScorer clone()
-	{
-		return null;
-	}
-	public String name()
-	{
-		return "";
-	}
-	public double[][] swapChange(RankList rl)
-	{
-		return null;
-	}	
+	public abstract double score(RankList rl);
+	public abstract MetricScorer clone();
+	public abstract String name();
+	public abstract double[][] swapChange(RankList rl);
 }
