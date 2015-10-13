@@ -60,7 +60,7 @@ public class NDCGScorer extends DCGScorer {
 				String[] s = content.split(" ");
 				String qid = s[0].trim();
 				//String docid = s[2].trim();
-				int label = Integer.parseInt(s[3].trim());
+				int label = (int) Math.rint(Double.parseDouble(s[3].trim()));
 				if(lastQID.compareTo("")!=0 && lastQID.compareTo(qid)!=0)
 				{
 					int size = (rel.size() > k) ? k : rel.size();
