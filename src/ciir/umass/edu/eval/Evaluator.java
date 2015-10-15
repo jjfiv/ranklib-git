@@ -1027,7 +1027,7 @@ public class Evaluator {
 	 */
 	public void testWithScoreFile(String testFile, String scoreFile)
 	{
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(scoreFile), "ASCII"))) {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(scoreFile), "UTF-8"))) {
 			List<RankList> test = readInput(testFile);
 			String content = "";
 			;
@@ -1073,7 +1073,7 @@ public class Evaluator {
 			normalize(test, features);
 		
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "ASCII"));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"));
 			for(int i=0;i<test.size();i++)
 			{
 				RankList l = test.get(i);
@@ -1108,7 +1108,7 @@ public class Evaluator {
 		FeatureManager.prepareCV(samples, nFold, trainingData, testData);
 		System.out.println("[Done.]");
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "ASCII"));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"));
 			for(int f=0;f<nFold;f++)
 			{
 				List<RankList> test = testData.get(f);
@@ -1139,7 +1139,7 @@ public class Evaluator {
 	public void score(List<String> modelFiles, List<String> testFiles, String outputFile)
 	{
 		int nFold = modelFiles.size();
-		try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "ASCII"))) {
+		try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"))) {
 			for(int f=0;f<nFold;f++)
 			{
 				List<RankList> test = FeatureManager.readInput(testFiles.get(f));
@@ -1174,7 +1174,7 @@ public class Evaluator {
 		if(normalize)
 			normalize(test, features);
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "ASCII"));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "UTF-8"));
 			for (RankList l : test) {
 				double[] scores = new double[l.size()];
 				for (int j = 0; j < l.size(); j++)
@@ -1203,7 +1203,7 @@ public class Evaluator {
 	{
 		List<RankList> test = readInput(testFile);
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "ASCII"));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "UTF-8"));
 			for (RankList l : test) {
 				for (int j = 0; j < l.size(); j++) {
 					String str = l.getID() + " Q0 " + l.get(j).getDescription().replace("#", "").trim() + " " + (j + 1) + " " + SimpleMath.round(1.0 - 0.0001 * j, 5) + " indri";
@@ -1236,7 +1236,7 @@ public class Evaluator {
 		FeatureManager.prepareCV(samples, nFold, trainingData, testData);
 		System.out.println("[Done.]");
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "ASCII"));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "UTF-8"));
 			for(int f=0;f<nFold;f++)
 			{
 				List<RankList> test = testData.get(f);
@@ -1275,7 +1275,7 @@ public class Evaluator {
 	{
 		int nFold = modelFiles.size();
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "ASCII"));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "UTF-8"));
 			for(int f=0;f<nFold;f++)
 			{
 				List<RankList> test = FeatureManager.readInput(testFiles.get(f));
