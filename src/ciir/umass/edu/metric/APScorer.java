@@ -42,8 +42,6 @@ public class APScorer extends MetricScorer {
 		relDocCount = new HashMap<>();
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(qrelFile)))) {
 			String content = "";
-			String lastQID = "";
-			int rdCount = 0;//relevant document count (per query)
 			while((content = in.readLine()) != null)
 			{
 				content = content.trim();
@@ -53,17 +51,13 @@ public class APScorer extends MetricScorer {
 				String qid = s[0].trim();
 				//String docid = s[2].trim();
 				int label = (int) Math.rint(Double.parseDouble(s[3].trim()));
-				if(lastQID.compareTo("")!=0 && lastQID.compareTo(qid)!=0)
-				{
-					relDocCount.put(lastQID, rdCount);
-					rdCount = 0;	
+				if(label > 0) {
+					int prev = relDocCount.getOrDefault(qid, 0);
+					relDocCount.put(qid, prev+1);
 				}
-				lastQID = qid;
-				if(label > 0)
-					rdCount++;
 			}
-			relDocCount.put(lastQID, rdCount);
-			System.out.println("Relevance judgment file loaded. [#q=" + relDocCount.keySet().size() + "]");
+
+			System.out.println("Relevance judgment file loaded. [#q=" + relDocCount.size() + "]");
 		}
 		catch(IOException ex)
 		{
