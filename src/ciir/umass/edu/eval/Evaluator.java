@@ -52,13 +52,13 @@ public class Evaluator {
 		int foldCV = -1;
 		String validationFile = "";
 		String testFile = "";
-		List<String> testFiles = new ArrayList<String>();
+		List<String> testFiles = new ArrayList<>();
 		int rankerType = 4;
 		String trainMetric = "ERR@10";
 		String testMetric = "";
 		Evaluator.normalize = false;
 		String savedModelFile = "";
-		List<String> savedModelFiles = new ArrayList<String>();
+		List<String> savedModelFiles = new ArrayList<>();
 		String kcvModelDir = "";
 		String kcvModelFile = "";
 		String rankFile = "";
@@ -506,10 +506,11 @@ public class Evaluator {
 						e.rank(savedModelFiles, rankFile, indriRankingFile);
 					else if(savedModelFiles.size() == 1)
 						e.rank(savedModelFile, rankFile, indriRankingFile);
-					//This is *ONLY* for my personal use. It is *NOT* exposed via cmd-line
-					//It will evaluate the input ranking (without being re-ranked by any model) using any measure specified via metric2T
-					else
+					else {
+						//This is *ONLY* for debugging purposes. It is *NOT* exposed via cmd-line
+						//It will evaluate the input ranking (without being re-ranked by any model) using any measure specified via metric2T
 						e.rank(rankFile, indriRankingFile);
+					}
 				}
 				else
 				{
@@ -632,18 +633,15 @@ public class Evaluator {
 	}
 	public void normalize(List<RankList> samples)
 	{
-		for(int i=0;i<samples.size();i++)
-			nml.normalize(samples.get(i));
+		for (RankList sample : samples) nml.normalize(sample);
 	}
 	public void normalize(List<RankList> samples, int[] fids)
 	{
-		for(int i=0;i<samples.size();i++)
-			nml.normalize(samples.get(i), fids);
+		for (RankList sample : samples) nml.normalize(sample, fids);
 	}
 	public void normalizeAll(List<List<RankList>> samples, int[] fids)
 	{
-		for(int i=0;i<samples.size();i++)
-			normalize(samples.get(i), fids);
+		for (List<RankList> sample : samples) normalize(sample, fids);
 	}
 	public int[] readFeature(String featureDefFile)
 	{
@@ -715,8 +713,8 @@ public class Evaluator {
 	 */
 	public void evaluate(String sampleFile, String validationFile, String featureDefFile, double percentTrain)
 	{
-		List<RankList> trainingData = new ArrayList<RankList>();
-		List<RankList> testData = new ArrayList<RankList>();
+		List<RankList> trainingData = new ArrayList<>();
+		List<RankList> testData = new ArrayList<>();
 		int[] features = prepareSplit(sampleFile, featureDefFile, percentTrain, normalize, trainingData, testData);
 		List<RankList> validation = null;
 		if(validationFile.compareTo("") != 0)
@@ -749,8 +747,8 @@ public class Evaluator {
 	 */
 	public void evaluate(String trainFile, double percentTrain, String testFile, String featureDefFile)
 	{
-		List<RankList> train = new ArrayList<RankList>();
-		List<RankList> validation = new ArrayList<RankList>();
+		List<RankList> train = new ArrayList<>();
+		List<RankList> validation = new ArrayList<>();
 		int[] features = prepareSplit(trainFile, featureDefFile, percentTrain, normalize, train, validation);
 		List<RankList> test = null;
 		if(testFile.compareTo("") != 0)
@@ -798,9 +796,9 @@ public class Evaluator {
 	 */
 	public void evaluate(String sampleFile, String featureDefFile, int nFold, float tvs, String modelDir, String modelFile)
 	{
-		List<List<RankList>> trainingData = new ArrayList<List<RankList>>();
-		List<List<RankList>> validationData = new ArrayList<List<RankList>>();
-		List<List<RankList>> testData = new ArrayList<List<RankList>>();
+		List<List<RankList>> trainingData = new ArrayList<>();
+		List<List<RankList>> validationData = new ArrayList<>();
+		List<List<RankList>> testData = new ArrayList<>();
 		//read all samples
 		List<RankList> samples = FeatureManager.readInput(sampleFile);
 		//get features
@@ -880,11 +878,9 @@ public class Evaluator {
 	{
 		List<RankList> test = readInput(testFile);
 		double rankScore = 0.0;
-		List<String> ids = new ArrayList<String>();
-		List<Double> scores = new ArrayList<Double>();
-		for(int i=0;i<test.size();i++)
-		{
-			RankList l = test.get(i);
+		List<String> ids = new ArrayList<>();
+		List<Double> scores = new ArrayList<>();
+		for (RankList l : test) {
 			double score = testScorer.score(l);
 			ids.add(l.getID());
 			scores.add(score);
@@ -915,8 +911,8 @@ public class Evaluator {
 			normalize(test, features);
 		
 		double rankScore = 0.0;
-		List<String> ids = new ArrayList<String>();
-		List<Double> scores = new ArrayList<Double>();
+		List<String> ids = new ArrayList<>();
+		List<Double> scores = new ArrayList<>();
 		for (RankList aTest : test) {
 			RankList l = ranker.rank(aTest);
 			double score = testScorer.score(l);
@@ -943,8 +939,8 @@ public class Evaluator {
 	 */
 	public void test(List<String> modelFiles, String testFile, String prpFile)
 	{
-		List<List<RankList>> trainingData = new ArrayList<List<RankList>>();
-		List<List<RankList>> testData = new ArrayList<List<RankList>>();
+		List<List<RankList>> trainingData = new ArrayList<>();
+		List<List<RankList>> testData = new ArrayList<>();
 		//read all samples
 		int nFold = modelFiles.size();
 		List<RankList> samples = FeatureManager.readInput(testFile);
@@ -952,8 +948,8 @@ public class Evaluator {
 		FeatureManager.prepareCV(samples, nFold, trainingData, testData);
 		System.out.println("[Done.]");
 		double rankScore = 0.0;
-		List<String> ids = new ArrayList<String>();
-		List<Double> scores = new ArrayList<Double>();
+		List<String> ids = new ArrayList<>();
+		List<Double> scores = new ArrayList<>();
 		for(int f=0;f<nFold;f++)
 		{
 			List<RankList> test = testData.get(f);
@@ -961,10 +957,9 @@ public class Evaluator {
 			int[] features = ranker.getFeatures();
 			if(normalize)
 				normalize(test, features);
-			
-			for(int i=0;i<test.size();i++)
-			{
-				RankList l = ranker.rank(test.get(i));
+
+			for (RankList aTest : test) {
+				RankList l = ranker.rank(aTest);
 				double score = testScorer.score(l);
 				ids.add(l.getID());
 				scores.add(score);
@@ -991,8 +986,8 @@ public class Evaluator {
 	{
 		int nFold = modelFiles.size();
 		double rankScore = 0.0;
-		List<String> ids = new ArrayList<String>();
-		List<Double> scores = new ArrayList<Double>();
+		List<String> ids = new ArrayList<>();
+		List<Double> scores = new ArrayList<>();
 		for(int f=0;f<nFold;f++)
 		{
 			List<RankList> test = FeatureManager.readInput(testFiles.get(f));
@@ -1000,10 +995,9 @@ public class Evaluator {
 			int[] features = ranker.getFeatures();
 			if(normalize)
 				normalize(test, features);
-			
-			for(int i=0;i<test.size();i++)
-			{
-				RankList l = ranker.rank(test.get(i));
+
+			for (RankList aTest : test) {
+				RankList l = ranker.rank(aTest);
 				double score = testScorer.score(l);
 				ids.add(l.getID());
 				scores.add(score);
@@ -1031,7 +1025,7 @@ public class Evaluator {
 			List<RankList> test = readInput(testFile);
 			String content = "";
 			;
-			List<Double> scores = new ArrayList<Double>();
+			List<Double> scores = new ArrayList<>();
 			while((content = in.readLine()) != null)
 			{
 				content = content.trim();
@@ -1074,12 +1068,9 @@ public class Evaluator {
 		
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"));
-			for(int i=0;i<test.size();i++)
-			{
-				RankList l = test.get(i);
-				for(int j=0;j<l.size();j++)
-				{
-					out.write(l.getID() + "\t" + j + "\t" + ranker.eval(l.get(j))+"");
+			for (RankList l : test) {
+				for (int j = 0; j < l.size(); j++) {
+					out.write(l.getID() + "\t" + j + "\t" + ranker.eval(l.get(j)) + "");
 					out.newLine();
 				}
 			}
@@ -1099,8 +1090,8 @@ public class Evaluator {
 	 */
 	public void score(List<String> modelFiles, String testFile, String outputFile)
 	{
-		List<List<RankList>> trainingData = new ArrayList<List<RankList>>();
-		List<List<RankList>> testData = new ArrayList<List<RankList>>();
+		List<List<RankList>> trainingData = new ArrayList<>();
+		List<List<RankList>> testData = new ArrayList<>();
 		//read all samples
 		int nFold = modelFiles.size();
 		List<RankList> samples = FeatureManager.readInput(testFile);
@@ -1227,8 +1218,8 @@ public class Evaluator {
 	 */
 	public void rank(List<String> modelFiles, String testFile, String indriRanking)
 	{
-		List<List<RankList>> trainingData = new ArrayList<List<RankList>>();
-		List<List<RankList>> testData = new ArrayList<List<RankList>>();
+		List<List<RankList>> trainingData = new ArrayList<>();
+		List<List<RankList>> testData = new ArrayList<>();
 		//read all samples
 		int nFold = modelFiles.size();
 		List<RankList> samples = FeatureManager.readInput(testFile);

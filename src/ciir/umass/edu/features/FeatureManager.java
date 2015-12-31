@@ -28,7 +28,7 @@ public class FeatureManager {
 	 */
 	public static void main(String[] args) {
 		
-		List<String> rankingFiles = new ArrayList<String>();
+		List<String> rankingFiles = new ArrayList<>();
 		String outputDir = "";
 		boolean shuffle = false;
 		int nFold = 0;
@@ -93,9 +93,9 @@ public class FeatureManager {
 			}
 			if(nFold > 0)
 			{
-				List<List<RankList>> trains = new ArrayList<List<RankList>>();
-				List<List<RankList>> tests = new ArrayList<List<RankList>>();
-				List<List<RankList>> valis = new ArrayList<List<RankList>>();
+				List<List<RankList>> trains = new ArrayList<>();
+				List<List<RankList>> tests = new ArrayList<>();
+				List<List<RankList>> valis = new ArrayList<>();
 				System.out.println("Partitioning... ");
 				prepareCV(samples, nFold, tvs, trains, valis, tests);
 				System.out.println("[Done]");
@@ -137,7 +137,7 @@ public class FeatureManager {
 	 */
 	public static List<RankList> readInput(String inputFile, boolean mustHaveRelDoc, boolean useSparseRepresentation)	
 	{
-		List<RankList> samples = new ArrayList<RankList>();
+		List<RankList> samples = new ArrayList<>();
 		int countRL = 0;
 		int countEntries = 0;
 		try {
@@ -146,7 +146,7 @@ public class FeatureManager {
 			
 			String lastID = "";
 			boolean hasRel = false;
-			List<DataPoint> rl = new ArrayList<DataPoint>();
+			List<DataPoint> rl = new ArrayList<>();
 			while((content = in.readLine()) != null)
 			{
 				content = content.trim();
@@ -168,7 +168,7 @@ public class FeatureManager {
 				{
 					if(!mustHaveRelDoc || hasRel)
 						samples.add(new RankList(rl));
-					rl = new ArrayList<DataPoint>();
+					rl = new ArrayList<>();
 					hasRel = false;
 				}
 				
@@ -197,7 +197,7 @@ public class FeatureManager {
 	 */
 	public static List<RankList> readInput(List<String> inputFiles)	
 	{
-		List<RankList> samples = new ArrayList<RankList>();
+		List<RankList> samples = new ArrayList<>();
 		for(int i=0;i<inputFiles.size();i++)
 		{
 			List<RankList> s = readInput(inputFiles.get(i), false, false);
@@ -213,7 +213,7 @@ public class FeatureManager {
 	public static int[] readFeature(String featureDefFile)
 	{
 		int[] features = null;
-		List<String> fids = new ArrayList<String>();
+		List<String> fids = new ArrayList<>();
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(featureDefFile)))) {
 			String content = "";
 			while((content = in.readLine()) != null)
@@ -287,7 +287,7 @@ public class FeatureManager {
 		int total = 0;
 		for(int f=0;f<nFold;f++)
 		{
-			List<Integer> t = new ArrayList<Integer>();
+			List<Integer> t = new ArrayList<>();
 			for(int i=0;i<size && start+i<samples.size();i++)
 				t.add(start+i);
 			trainSamplesIdx.add(t);
@@ -300,9 +300,9 @@ public class FeatureManager {
 		for(int i=0;i<trainSamplesIdx.size();i++)
 		{
 			System.out.print("\rCreating data for fold-" + (i+1) + "...");
-			List<RankList> train = new ArrayList<RankList>();
-			List<RankList> test = new ArrayList<RankList>();
-			List<RankList> vali = new ArrayList<RankList>();
+			List<RankList> train = new ArrayList<>();
+			List<RankList> test = new ArrayList<>();
+			List<RankList> vali = new ArrayList<>();
 			//train-test split
 			List<Integer> t = trainSamplesIdx.get(i);
 			for(int j=0;j<samples.size();j++)
