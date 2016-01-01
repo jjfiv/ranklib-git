@@ -40,7 +40,7 @@ public class CoorAscent extends Ranker {
 	public static double slack = 0.001;//regularized parameter
 	
 	//Local variables
-	protected double[] weight = null; 
+	public double[] weight = null;
 	
 	protected int current_feature = -1;//used only during learning
 	protected double weight_change = -1.0;//used only during learning
