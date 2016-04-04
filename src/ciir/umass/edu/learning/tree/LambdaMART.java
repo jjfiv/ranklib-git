@@ -61,6 +61,7 @@ public class LambdaMART extends Ranker {
 	public LambdaMART()
 	{		
 	}
+
 	public LambdaMART(List<RankList> samples, int[] features, MetricScorer scorer)
 	{
 		super(samples, features, scorer);
@@ -172,6 +173,7 @@ public class LambdaMART extends Ranker {
 		System.gc();
 		PRINTLN("[Done]");
 	}
+
 	public void learn()
 	{
 		ensemble = new Ensemble();
@@ -277,18 +279,22 @@ public class LambdaMART extends Ranker {
 		}
 		PRINTLN("---------------------------------");
 	}
+
 	public double eval(DataPoint dp)
 	{
 		return ensemble.eval(dp);
 	}	
+
 	public Ranker createNew()
 	{
 		return new LambdaMART();
 	}
+
 	public String toString()
 	{
 		return ensemble.toString();
 	}
+
 	public String model()
 	{
 		String output = "## " + name() + "\n";
@@ -301,12 +307,14 @@ public class LambdaMART extends Ranker {
 		output += toString();
 		return output;
 	}
-  @Override
+
+        @Override
 	public void loadFromString(String fullText)
 	{
 		try {
 			String content = "";
-			String model = "";
+			//String model = "";
+                        StringBuffer model = new StringBuffer ();
 			BufferedReader in = new BufferedReader(new StringReader(fullText));
 			while((content = in.readLine()) != null)
 			{
@@ -316,11 +324,12 @@ public class LambdaMART extends Ranker {
 				if(content.indexOf("##")==0)
 					continue;
 				//actual model component
-				model += content;
+				//model += content;
+                                model.append (content);
 			}
 			in.close();
 			//load the ensemble
-			ensemble = new Ensemble(model);
+			ensemble = new Ensemble(model.toString());
 			features = ensemble.getFeatures();
 		}
 		catch(Exception ex)
@@ -328,6 +337,7 @@ public class LambdaMART extends Ranker {
 			throw RankLibError.create("Error in LambdaMART::load(): ", ex);
 		}
 	}
+
 	public void printParameters()
 	{
 		PRINTLN("No. of trees: " + nTrees);
@@ -337,10 +347,12 @@ public class LambdaMART extends Ranker {
 		PRINTLN("Learning rate: " + learningRate);
 		PRINTLN("Stop early: " + nRoundToStopEarly + " rounds without performance gain on validation data");		
 	}	
+
 	public String name()
 	{
 		return "LambdaMART";
 	}
+
 	public Ensemble getEnsemble()
 	{
 		return ensemble;
@@ -375,6 +387,7 @@ public class LambdaMART extends Ranker {
 			p.await();
 		}
 	}
+
 	protected void computePseudoResponses(int start, int end, int current)
 	{
 		int cutoff = scorer.getK();
@@ -416,6 +429,7 @@ public class LambdaMART extends Ranker {
 			current += orig.size();
 		}
 	}
+
 	protected void updateTreeOutput(RegressionTree rt)
 	{
 		List<Split> leaves = rt.leaves();
@@ -437,6 +451,7 @@ public class LambdaMART extends Ranker {
 				s.setOutput(s1/s2);
 		}
 	}
+
 	protected int[] sortSamplesByFeature(DataPoint[] samples, int fid)
 	{
 		double[] score = new double[samples.length];
@@ -445,6 +460,7 @@ public class LambdaMART extends Ranker {
 		int[] idx = MergeSorter.sort(score, true); 
 		return idx;
 	}
+
 	/**
 	 * This function is equivalent to the inherited function rank(...), but it uses the cached model's outputs instead of computing them from scratch.
 	 * @param rankListIndex
@@ -460,6 +476,7 @@ public class LambdaMART extends Ranker {
 		int[] idx = MergeSorter.sort(scores, false);
 		return new RankList(orig, idx);
 	}
+
 	protected float computeModelScoreOnTraining() 
 	{
 		/*float s = 0;
@@ -492,10 +509,12 @@ public class LambdaMART extends Ranker {
 		s = s / samples.size();
 		return s;
 	}
+
 	protected float computeModelScoreOnTraining(int start, int end, int current) 
 	{
 		float s = 0;
 		int c = current;
+
 		for(int i=start;i<=end;i++)
 		{
 			s += scorer.score(rank(i, c));
@@ -503,6 +522,7 @@ public class LambdaMART extends Ranker {
 		}
 		return s;
 	}
+
 	protected float computeModelScoreOnValidation() 
 	{
 		/*float score = 0;
@@ -529,6 +549,7 @@ public class LambdaMART extends Ranker {
 		float score = computeModelScoreOnValidation(0, validationSamples.size()-1);
 		return score/validationSamples.size();
 	}
+
 	protected float computeModelScoreOnValidation(int start, int end) 
 	{
 		float score = 0;
@@ -551,22 +572,26 @@ public class LambdaMART extends Ranker {
 		LambdaMART ranker = null;
 		int start = -1;
 		int end = -1;
+
 		SortWorker(LambdaMART ranker, int start, int end)
 		{
 			this.ranker = ranker;
 			this.start = start;
 			this.end = end;
 		}		
+
 		public void run()
 		{
 			ranker.sortSamplesByFeature(start, end);
 		}
 	}
+
 	class LambdaComputationWorker implements Runnable {
 		LambdaMART ranker = null;
 		int rlStart = -1;
 		int rlEnd = -1;
 		int martStart = -1;
+
 		LambdaComputationWorker(LambdaMART ranker, int rlStart, int rlEnd, int martStart)
 		{
 			this.ranker = ranker;
@@ -574,11 +599,13 @@ public class LambdaMART extends Ranker {
 			this.rlEnd = rlEnd;
 			this.martStart = martStart;
 		}		
+
 		public void run()
 		{
 			ranker.computePseudoResponses(rlStart, rlEnd, martStart);
 		}
 	}
+
 	class Worker implements Runnable {
 		LambdaMART ranker = null;
 		int rlStart = -1;
@@ -596,6 +623,7 @@ public class LambdaMART extends Ranker {
 			this.rlStart = rlStart;
 			this.rlEnd = rlEnd;
 		}
+
 		Worker(LambdaMART ranker, int rlStart, int rlEnd, int martStart)
 		{
 			type = 4;
@@ -604,6 +632,7 @@ public class LambdaMART extends Ranker {
 			this.rlEnd = rlEnd;
 			this.martStart = martStart;
 		}
+
 		public void run()
 		{
 			if(type == 4)
