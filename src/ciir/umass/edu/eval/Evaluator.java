@@ -1,5 +1,5 @@
 /*===============================================================================
- * Copyright (c) 2010-2015 University of Massachusetts.  All Rights Reserved.
+ * Copyright (c) 2010-2016 University of Massachusetts.  All Rights Reserved.
  *
  * Use of the RankLib package is subject to the terms of the software license set 
  * forth in the LICENSE file included with this software, and also available at
@@ -32,8 +32,10 @@ import java.util.List;
 /**
  * @author vdang
  * 
- * This class is meant to provide the interface to run and compare different ranking algorithms. It lets users specify general parameters (e.g. what algorithm to run, 
- * training/testing/validating data, etc.) as well as algorithm-specific parameters. Type "java -jar bin/RankLib.jar" at the command-line to see all the options. 
+ * This class is meant to provide the interface to run and compare different ranking algorithms. 
+ * It lets users specify general parameters (e.g. what algorithm to run, training/testing/validating
+ *  data, etc.) as well as algorithm-specific parameters. Type "java -jar bin/RankLib.jar" at the 
+ *  command-line to see all the options. 
  */
 public class Evaluator {
 
@@ -42,8 +44,14 @@ public class Evaluator {
 	 */
 	public static void main(String[] args) {
 		
-		String[] rType = new String[]{"MART", "RankNet", "RankBoost", "AdaRank", "Coordinate Ascent", "LambdaRank", "LambdaMART", "ListNet", "Random Forests", "Linear Regression"};
-		RANKER_TYPE[] rType2 = new RANKER_TYPE[]{RANKER_TYPE.MART, RANKER_TYPE.RANKNET, RANKER_TYPE.RANKBOOST, RANKER_TYPE.ADARANK, RANKER_TYPE.COOR_ASCENT, RANKER_TYPE.LAMBDARANK, RANKER_TYPE.LAMBDAMART, RANKER_TYPE.LISTNET, RANKER_TYPE.RANDOM_FOREST, RANKER_TYPE.LINEAR_REGRESSION};
+		String[] rType = new String[] { "MART", "RankNet", "RankBoost", "AdaRank", "Coordinate Ascent",
+                                                "LambdaRank", "LambdaMART", "ListNet", "Random Forests", 
+                                                "Linear Regression" };
+		RANKER_TYPE[] rType2 = new RANKER_TYPE[] { RANKER_TYPE.MART, RANKER_TYPE.RANKNET, 
+                                                           RANKER_TYPE.RANKBOOST, RANKER_TYPE.ADARANK, 
+                                                           RANKER_TYPE.COOR_ASCENT, RANKER_TYPE.LAMBDARANK, 
+                                                           RANKER_TYPE.LAMBDAMART, RANKER_TYPE.LISTNET, 
+                                                           RANKER_TYPE.RANDOM_FOREST, RANKER_TYPE.LINEAR_REGRESSION };
 		
 		String trainFile = "";
 		String featureDescriptionFile = "";
@@ -88,8 +96,10 @@ public class Evaluator {
 			System.out.println("\t[ -feature <file> ]\tFeature description file: list features to be considered by the learner, each on a separate line");
 			System.out.println("\t\t\t\tIf not specified, all features will be used.");
 			//System.out.println("\t[ -metric2t <metric> ]\tMetric to optimize on the training data. Supported: MAP, NDCG@k, DCG@k, P@k, RR@k, BEST@k, ERR@k (default=" + trainMetric + ")");
-			System.out.println("\t[ -metric2t <metric> ]\tMetric to optimize on the training data. Supported: MAP, NDCG@k, DCG@k, P@k, RR@k, ERR@k (default=" + trainMetric + ")");
-			System.out.println("\t[ -gmax <label> ]\tHighest judged relevance label. It affects the calculation of ERR (default=" + (int)SimpleMath.logBase2(ERRScorer.MAX) + ", i.e. 5-point scale {0,1,2,3,4})");
+			System.out.println("\t[ -metric2t <metric> ]\tMetric to optimize on the training data.  " +
+                                           "Supported: MAP, NDCG@k, DCG@k, P@k, RR@k, ERR@k (default=" + trainMetric + ")");
+			System.out.println("\t[ -gmax <label> ]\tHighest judged relevance label. It affects the calculation of ERR " +
+                                           "(default=" + (int)SimpleMath.logBase2(ERRScorer.MAX) + ", i.e. 5-point scale {0,1,2,3,4})");
 			System.out.println("\t[ -qrel <file> ]\tTREC-style relevance judgment file. It only affects MAP and NDCG (default=unspecified)");
 			System.out.println("\t[ -silent ]\t\tDo not print progress messages (which are printed by default)");
 			
@@ -135,14 +145,16 @@ public class Evaluator {
 			System.out.println("");
 			System.out.println("    [-] RankBoost-specific parameters");
 			System.out.println("\t[ -round <T> ]\t\tThe number of rounds to train (default=" + RankBoost.nIteration + ")");
-			System.out.println("\t[ -tc <k> ]\t\tNumber of threshold candidates to search. -1 to use all feature values (default=" + RankBoost.nThreshold + ")");
+			System.out.println("\t[ -tc <k> ]\t\tNumber of threshold candidates to search. -1 to use all feature values (default=" + 
+                                           RankBoost.nThreshold + ")");
 			
 			System.out.println("");
 			System.out.println("    [-] AdaRank-specific parameters");
 			System.out.println("\t[ -round <T> ]\t\tThe number of rounds to train (default=" + AdaRank.nIteration + ")");
 			System.out.println("\t[ -noeq ]\t\tTrain without enqueuing too-strong features (default=unspecified)");
 			System.out.println("\t[ -tolerance <t> ]\tTolerance between two consecutive rounds of learning (default=" + AdaRank.tolerance + ")");
-			System.out.println("\t[ -max <times> ]\tThe maximum number of times can a feature be consecutively selected without changing performance (default=" + AdaRank.maxSelCount + ")");
+			System.out.println("\t[ -max <times> ]\tThe maximum number of times a feature can be consecutively selected " +
+                                           "without changing performance (default=" + AdaRank.maxSelCount + ")");
 
 			System.out.println("");
 			System.out.println("    [-] Coordinate Ascent-specific parameters");
@@ -156,9 +168,12 @@ public class Evaluator {
 			System.out.println("\t[ -tree <t> ]\t\tNumber of trees (default=" + LambdaMART.nTrees + ")");
 			System.out.println("\t[ -leaf <l> ]\t\tNumber of leaves for each tree (default=" + LambdaMART.nTreeLeaves + ")");
 			System.out.println("\t[ -shrinkage <factor> ]\tShrinkage, or learning rate (default=" + LambdaMART.learningRate + ")");
-			System.out.println("\t[ -tc <k> ]\t\tNumber of threshold candidates for tree spliting. -1 to use all feature values (default=" + LambdaMART.nThreshold + ")");
-			System.out.println("\t[ -mls <n> ]\t\tMin leaf support -- minimum % of docs each leaf has to contain (default=" + LambdaMART.minLeafSupport + ")");
-			System.out.println("\t[ -estop <e> ]\t\tStop early when no improvement is observed on validaton data in e consecutive rounds (default=" + LambdaMART.nRoundToStopEarly + ")");
+			System.out.println("\t[ -tc <k> ]\t\tNumber of threshold candidates for tree spliting. -1 to use all feature values (default=" + 
+                                           LambdaMART.nThreshold + ")");
+			System.out.println("\t[ -mls <n> ]\t\tMin leaf support -- minimum % of docs each leaf has to contain (default=" +
+                                           LambdaMART.minLeafSupport + ")");
+			System.out.println("\t[ -estop <e> ]\t\tStop early when no improvement is observed on validaton data in e consecutive rounds (default=" + 
+                                           LambdaMART.nRoundToStopEarly + ")");
 
 			System.out.println("");
 			System.out.println("    [-] ListNet-specific parameters");
@@ -175,7 +190,8 @@ public class Evaluator {
 			System.out.println("\t[ -tree <t> ]\t\tNumber of trees in each bag (default=" + RFRanker.nTrees + ")");
 			System.out.println("\t[ -leaf <l> ]\t\tNumber of leaves for each tree (default=" + RFRanker.nTreeLeaves + ")");
 			System.out.println("\t[ -shrinkage <factor> ]\tShrinkage, or learning rate (default=" + RFRanker.learningRate + ")");
-			System.out.println("\t[ -tc <k> ]\t\tNumber of threshold candidates for tree spliting. -1 to use all feature values (default=" + RFRanker.nThreshold + ")");
+			System.out.println("\t[ -tc <k> ]\t\tNumber of threshold candidates for tree spliting. -1 to use all feature values (default=" +
+                                           RFRanker.nThreshold + ")");
 			System.out.println("\t[ -mls <n> ]\t\tMin leaf support -- minimum % of docs each leaf has to contain (default=" + RFRanker.minLeafSupport + ")");
 
 			System.out.println("");
@@ -574,6 +590,7 @@ public class Evaluator {
 	protected MetricScorer testScorer = null;
 	protected RANKER_TYPE type = RANKER_TYPE.MART;
 	
+
 	public Evaluator(RANKER_TYPE rType, METRIC trainMetric, METRIC testMetric)
 	{
 		this.type = rType;
@@ -585,6 +602,8 @@ public class Evaluator {
 			testScorer.loadExternalRelevanceJudgment(qrelFile);
 		}
 	}
+
+
 	public Evaluator(RANKER_TYPE rType, METRIC trainMetric, int trainK, METRIC testMetric, int testK)
 	{
 		this.type = rType;
@@ -596,6 +615,8 @@ public class Evaluator {
 			testScorer.loadExternalRelevanceJudgment(qrelFile);
 		}
 	}
+
+
 	public Evaluator(RANKER_TYPE rType, METRIC trainMetric, METRIC testMetric, int k)
 	{
 		this.type = rType;
@@ -607,6 +628,8 @@ public class Evaluator {
 			testScorer.loadExternalRelevanceJudgment(qrelFile);
 		}
 	}
+
+
 	public Evaluator(RANKER_TYPE rType, METRIC metric, int k)
 	{
 		this.type = rType;
@@ -615,6 +638,8 @@ public class Evaluator {
 			trainScorer.loadExternalRelevanceJudgment(qrelFile);
 		testScorer = trainScorer;		
 	}
+
+
 	public Evaluator(RANKER_TYPE rType, String trainMetric, String testMetric)
 	{
 		this.type = rType;
@@ -627,28 +652,39 @@ public class Evaluator {
 		}
 	}	
 	
+
 	public List<RankList> readInput(String inputFile)	
 	{
 		return FeatureManager.readInput(inputFile, mustHaveRelDoc, useSparseRepresentation);		
 	}
+
+
 	public void normalize(List<RankList> samples)
 	{
 		for (RankList sample : samples) nml.normalize(sample);
 	}
+
+
 	public void normalize(List<RankList> samples, int[] fids)
 	{
 		for (RankList sample : samples) nml.normalize(sample, fids);
 	}
+
+
 	public void normalizeAll(List<List<RankList>> samples, int[] fids)
 	{
 		for (List<RankList> sample : samples) normalize(sample, fids);
 	}
+
+
 	public int[] readFeature(String featureDefFile)
 	{
 		if(featureDefFile.compareTo("") == 0)
 			return null;
 		return FeatureManager.readFeature(featureDefFile);
 	}
+
+
 	public double evaluate(Ranker ranker, List<RankList> rl)
 	{
 		List<RankList> l = rl;
@@ -656,6 +692,7 @@ public class Evaluator {
 			l = ranker.rank(rl);
 		return testScorer.score(l);
 	}
+
 	
 	/**
 	 * Evaluate the currently selected ranking algorithm using <training data, validation data, testing data and the defined features>.
@@ -704,6 +741,8 @@ public class Evaluator {
 			System.out.println("Model saved to: " + modelFile);
 		}
 	}
+
+
 	/**
 	 * Evaluate the currently selected ranking algorithm using percenTrain% of the samples for training the rest for testing.
 	 * @param sampleFile
@@ -737,6 +776,8 @@ public class Evaluator {
 			System.out.println("Model saved to: " + modelFile);
 		}
 	}
+
+
 	/**
 	 * Evaluate the currently selected ranking algorithm using percenTrain% of the training samples for training the rest as validation data.
 	 * Test data is specified separately.
@@ -773,6 +814,8 @@ public class Evaluator {
 			System.out.println("Model saved to: " + modelFile);
 		}
 	}
+
+
 	/**
 	 * Evaluate the currently selected ranking algorithm using <data, defined features> with k-fold cross validation.
 	 * @param sampleFile
@@ -785,6 +828,8 @@ public class Evaluator {
 	{
 		evaluate(sampleFile, featureDefFile, nFold, -1, modelDir, modelFile);
 	}
+
+
 	/**
 	 * Evaluate the currently selected ranking algorithm using <data, defined features> with k-fold cross validation.
 	 * @param sampleFile
@@ -799,13 +844,18 @@ public class Evaluator {
 		List<List<RankList>> trainingData = new ArrayList<>();
 		List<List<RankList>> validationData = new ArrayList<>();
 		List<List<RankList>> testData = new ArrayList<>();
+
 		//read all samples
-		List<RankList> samples = FeatureManager.readInput(sampleFile);
+		//List<RankList> samples = FeatureManager.readInput(sampleFile);
+                List<RankList> samples = readInput (sampleFile);
+
 		//get features
 		int[] features = readFeature(featureDefFile);//read features
 		if(features == null)//no features specified ==> use all features in the training file
 			features = FeatureManager.getFeatureFromSampleVector(samples);
+
 		FeatureManager.prepareCV(samples, nFold, tvs, trainingData, validationData, testData);
+
 		//normalization
 		if(normalize)
 		{
@@ -864,6 +914,7 @@ public class Evaluator {
 		System.out.println("Total\t|   " + "\t" + "\t|  " + SimpleMath.round(totalScoreOnTest/totalTestSampleSize, 4) + "\t");
 	}
 	
+
 	/**
 	 * Evaluate the performance (in -metric2T) of the input rankings
 	 * @param testFile Input rankings
@@ -874,6 +925,8 @@ public class Evaluator {
 		double rankScore = evaluate(null, test);
 		System.out.println(testScorer.name() + " on test data: " + SimpleMath.round(rankScore, 4));
 	}
+
+
 	public void test(String testFile, String prpFile)
 	{
 		List<RankList> test = readInput(testFile);
@@ -896,6 +949,8 @@ public class Evaluator {
 			System.out.println("Per-ranked list performance saved to: " + prpFile);
 		}
 	}
+
+
 	/**
 	 * Evaluate the performance (in -metric2T) of a pre-trained model. Save its performance on each of the ranked list if this is specified. 
 	 * @param modelFile Pre-trained model
@@ -930,6 +985,8 @@ public class Evaluator {
 			System.out.println("Per-ranked list performance saved to: " + prpFile);
 		}
 	}
+
+
 	/**
 	 * Evaluate the performance (in -metric2T) of k pre-trained models. Data in the test file will be splitted into k fold, where k=|models|.
 	 * Each model will be evaluated on the data from the corresponding fold.
@@ -941,9 +998,12 @@ public class Evaluator {
 	{
 		List<List<RankList>> trainingData = new ArrayList<>();
 		List<List<RankList>> testData = new ArrayList<>();
+
 		//read all samples
 		int nFold = modelFiles.size();
-		List<RankList> samples = FeatureManager.readInput(testFile);
+		//List<RankList> samples = FeatureManager.readInput(testFile);
+                List<RankList> samples = readInput(testFile);
+
 		System.out.print("Preparing " + nFold + "-fold test data... ");
 		FeatureManager.prepareCV(samples, nFold, trainingData, testData);
 		System.out.println("[Done.]");
@@ -976,6 +1036,8 @@ public class Evaluator {
 			System.out.println("Per-ranked list performance saved to: " + prpFile);
 		}
 	}
+
+
 	/**
 	 * Similar to the above, except data has already been splitted. The k-th model will be applied on the k-th test file.
 	 * @param modelFiles
@@ -990,9 +1052,11 @@ public class Evaluator {
 		List<Double> scores = new ArrayList<>();
 		for(int f=0;f<nFold;f++)
 		{
-			List<RankList> test = FeatureManager.readInput(testFiles.get(f));
+		        //List<RankList> test = FeatureManager.readInput(testFiles.get(f));
+		        List<RankList> test = readInput(testFiles.get(f));
 			Ranker ranker = rFact.loadRankerFromFile(modelFiles.get(f));
 			int[] features = ranker.getFeatures();
+
 			if(normalize)
 				normalize(test, features);
 
@@ -1014,6 +1078,8 @@ public class Evaluator {
 			System.out.println("Per-ranked list performance saved to: " + prpFile);
 		}
 	}
+
+
 	/**
 	 * Re-order the input rankings and measure their effectiveness (in -metric2T)
 	 * @param testFile Input rankings
@@ -1052,6 +1118,7 @@ public class Evaluator {
 		}
 	}
 
+
 	/**
 	 * Write the model's score for each of the documents in a test rankings. 
 	 * @param modelFile Pre-trained model
@@ -1081,6 +1148,8 @@ public class Evaluator {
 			throw RankLibError.create("Error in Evaluator::rank(): ", ex);
 		}
 	}
+
+
 	/**
 	 * Write the models' score for each of the documents in a test rankings. These test rankings are splitted into k chunks where k=|models|.
 	 * Each model is applied on the data from the corresponding fold.
@@ -1092,9 +1161,11 @@ public class Evaluator {
 	{
 		List<List<RankList>> trainingData = new ArrayList<>();
 		List<List<RankList>> testData = new ArrayList<>();
+
 		//read all samples
 		int nFold = modelFiles.size();
-		List<RankList> samples = FeatureManager.readInput(testFile);
+		//List<RankList> samples = FeatureManager.readInput(testFile);
+                List<RankList> samples = readInput(testFile);
 		System.out.print("Preparing " + nFold + "-fold test data... ");
 		FeatureManager.prepareCV(samples, nFold, trainingData, testData);
 		System.out.println("[Done.]");
@@ -1121,8 +1192,10 @@ public class Evaluator {
 			throw RankLibError.create("Error in Evaluator::score(): ", ex);
 		}
 	}
+
+
 	/**
-	 * Similar to the above, except data has already been splitted. The k-th model will be applied on the k-th test file.
+	 * Similar to the above, except data has already been split. The k-th model will be applied on the k-th test file.
 	 * @param modelFiles
 	 * @param testFiles
 	 * @param outputFile
@@ -1133,11 +1206,14 @@ public class Evaluator {
 		try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"))) {
 			for(int f=0;f<nFold;f++)
 			{
-				List<RankList> test = FeatureManager.readInput(testFiles.get(f));
+                                //List<RankList> test = FeatureManager.readInput(testFiles.get(f));
+                                List<RankList> test = readInput(testFiles.get(f));
 				Ranker ranker = rFact.loadRankerFromFile(modelFiles.get(f));
 				int[] features = ranker.getFeatures();
+
 				if(normalize)
 					normalize(test, features);
+
 				for (RankList l : test) {
 					for (int j = 0; j < l.size(); j++) {
 						out.write(l.getID() + "\t" + j + "\t" + ranker.eval(l.get(j)) + "");
@@ -1151,6 +1227,8 @@ public class Evaluator {
 			throw RankLibError.create("Error in Evaluator::score(): ", ex);
 		}
 	}
+
+
 	/**
 	 * Use a pre-trained model to re-rank the test rankings. Save the output ranking in indri's run format
 	 * @param modelFile
@@ -1162,6 +1240,7 @@ public class Evaluator {
 		Ranker ranker = rFact.loadRankerFromFile(modelFile);
 		int[] features = ranker.getFeatures();
 		List<RankList> test = readInput(testFile);
+
 		if(normalize)
 			normalize(test, features);
 		try {
@@ -1173,7 +1252,8 @@ public class Evaluator {
 				int[] idx = MergeSorter.sort(scores, false);
 				for (int j = 0; j < idx.length; j++) {
 					int k = idx[j];
-					String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " + (j + 1) + " " + SimpleMath.round(scores[k], 5) + " indri";
+					String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() +
+                                                     " " + (j + 1) + " " + SimpleMath.round(scores[k], 5) + " indri";
 					out.write(str);
 					out.newLine();
 				}
@@ -1185,6 +1265,8 @@ public class Evaluator {
 			throw RankLibError.create("Error in Evaluator::rank(): ", ex);
 		}
 	}
+
+
 	/**
 	 * Generate a ranking in Indri's format from the input ranking
 	 * @param testFile
@@ -1193,11 +1275,13 @@ public class Evaluator {
 	public void rank(String testFile, String indriRanking)
 	{
 		List<RankList> test = readInput(testFile);
+
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "UTF-8"));
 			for (RankList l : test) {
 				for (int j = 0; j < l.size(); j++) {
-					String str = l.getID() + " Q0 " + l.get(j).getDescription().replace("#", "").trim() + " " + (j + 1) + " " + SimpleMath.round(1.0 - 0.0001 * j, 5) + " indri";
+					String str = l.getID() + " Q0 " + l.get(j).getDescription().replace("#", "").trim() + " " +
+                                                     (j + 1) + " " + SimpleMath.round(1.0 - 0.0001 * j, 5) + " indri";
 					out.write(str);
 					out.newLine();
 				}
@@ -1209,6 +1293,8 @@ public class Evaluator {
 			throw RankLibError.create("Error in Evaluator::rank(): ", ex);
 		}
 	}
+
+
 	/**
 	 * Use k pre-trained models to re-rank the test rankings. Test rankings will be splitted into k fold, where k=|models|.
 	 * Each model will be used to rank the data from the corresponding fold. Save the output ranking in indri's run format. 
@@ -1220,12 +1306,15 @@ public class Evaluator {
 	{
 		List<List<RankList>> trainingData = new ArrayList<>();
 		List<List<RankList>> testData = new ArrayList<>();
+
 		//read all samples
 		int nFold = modelFiles.size();
-		List<RankList> samples = FeatureManager.readInput(testFile);
+		//List<RankList> samples = FeatureManager.readInput(testFile);
+                List<RankList> samples = readInput(testFile);
 		System.out.print("Preparing " + nFold + "-fold test data... ");
 		FeatureManager.prepareCV(samples, nFold, trainingData, testData);
 		System.out.println("[Done.]");
+
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "UTF-8"));
 			for(int f=0;f<nFold;f++)
@@ -1243,7 +1332,8 @@ public class Evaluator {
 					int[] idx = MergeSorter.sort(scores, false);
 					for (int j = 0; j < idx.length; j++) {
 						int k = idx[j];
-						String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " + (j + 1) + " " + SimpleMath.round(scores[k], 5) + " indri";
+						String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " +
+                                                            (j + 1) + " " + SimpleMath.round(scores[k], 5) + " indri";
 						out.write(str);
 						out.newLine();
 					}
@@ -1256,6 +1346,8 @@ public class Evaluator {
 			throw RankLibError.create("Error in Evaluator::rank(): ", ex);
 		}
 	}	
+
+
 	/**
 	 * Similar to the above, except data has already been splitted. The k-th model will be applied on the k-th test file.
 	 * @param modelFiles
@@ -1265,21 +1357,28 @@ public class Evaluator {
 	public void rank(List<String> modelFiles, List<String> testFiles, String indriRanking)
 	{
 		int nFold = modelFiles.size();
+
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indriRanking), "UTF-8"));
+
 			for(int f=0;f<nFold;f++)
 			{
-				List<RankList> test = FeatureManager.readInput(testFiles.get(f));
+                                //List<RankList> test = FeatureManager.readInput(testFiles.get(f));
+				List<RankList> test = readInput(testFiles.get(f));
 				Ranker ranker = rFact.loadRankerFromFile(modelFiles.get(f));
 				int[] features = ranker.getFeatures();
+
 				if(normalize)
 					normalize(test, features);
 
 				for (RankList l : test) {
 					double[] scores = new double[l.size()];
+
 					for (int j = 0; j < l.size(); j++)
 						scores[j] = ranker.eval(l.get(j));
+
 					int[] idx = MergeSorter.sort(scores, false);
+
 					for (int j = 0; j < idx.length; j++) {
 						int k = idx[j];
 						String str = l.getID() + " Q0 " + l.get(k).getDescription().replace("#", "").trim() + " " + (j + 1) + " " + SimpleMath.round(scores[k], 5) + " indri";
@@ -1296,6 +1395,7 @@ public class Evaluator {
 		}
 	}
 
+
 	/**
 	 * Split the input file into two with respect to a specified split size.
 	 * @param sampleFile Input data file
@@ -1308,9 +1408,14 @@ public class Evaluator {
 	 */
 	private int[] prepareSplit(String sampleFile, String featureDefFile, double percentTrain, boolean normalize, List<RankList> trainingData, List<RankList> testData)
 	{
-		List<RankList> data = readInput(sampleFile);//read input
-		int[] features = readFeature(featureDefFile);//read features
-		if(features == null)//no features specified ==> use all features in the training file
+                //read input
+		List<RankList> data = readInput(sampleFile);
+
+                //read features
+		int[] features = readFeature(featureDefFile);
+
+                // no features specified ==> use all features in the training file
+		if(features == null)
 			features = FeatureManager.getFeatureFromSampleVector(data);
 		
 		if(normalize)
@@ -1319,6 +1424,7 @@ public class Evaluator {
 		FeatureManager.prepareSplit(data, percentTrain, trainingData, testData);
 		return features;
 	}
+
 		
 	/**
 	 * Save systems' performance to file
