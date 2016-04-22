@@ -1,5 +1,5 @@
 /*===============================================================================
- * Copyright (c) 2010-2012 University of Massachusetts.  All Rights Reserved.
+ * Copyright (c) 2010-2016 University of Massachusetts.  All Rights Reserved.
  *
  * Use of the RankLib package is subject to the terms of the software license set 
  * forth in the LICENSE file included with this software, and also available at
@@ -74,6 +74,7 @@ public class FeatureManager {
 		if(shuffle || nFold > 0)
 		{
 			List<RankList> samples = readInput(rankingFiles);
+
 			if(samples.size() == 0)
 			{
 				System.out.println("Error: The input file is empty.");
@@ -81,6 +82,7 @@ public class FeatureManager {
 			}
 			
 			String fn = FileUtils.getFileName(rankingFiles.get(0));
+
 			if(shuffle)
 			{
 				fn +=  ".shuffled";
@@ -91,6 +93,7 @@ public class FeatureManager {
 				FeatureManager.save(samples, outputDir + fn);
 				System.out.println("[Done]");
 			}
+
 			if(nFold > 0)
 			{
 				List<List<RankList>> trains = new ArrayList<>();
@@ -99,6 +102,7 @@ public class FeatureManager {
 				System.out.println("Partitioning... ");
 				prepareCV(samples, nFold, tvs, trains, valis, tests);
 				System.out.println("[Done]");
+
 				try{
 					for(int i=0;i<trains.size();i++)
 					{
@@ -119,6 +123,7 @@ public class FeatureManager {
 		}
 	}
 	
+
 	/**
 	 * Read a set of rankings from a single file.
 	 * @param inputFile
@@ -128,6 +133,8 @@ public class FeatureManager {
 	{
 		return readInput(inputFile, false, false);
 	}
+
+
 	/**
 	 * Read a set of rankings from a single file.
 	 * @param inputFile
@@ -140,6 +147,7 @@ public class FeatureManager {
 		List<RankList> samples = new ArrayList<>();
 		int countRL = 0;
 		int countEntries = 0;
+
 		try {
 			String content = "";
 			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "ASCII"));
@@ -147,11 +155,13 @@ public class FeatureManager {
 			String lastID = "";
 			boolean hasRel = false;
 			List<DataPoint> rl = new ArrayList<>();
+
 			while((content = in.readLine()) != null)
 			{
 				content = content.trim();
 				if(content.length() == 0)
 					continue;
+
 				if(content.indexOf("#")==0)
 					continue;
 				
@@ -159,6 +169,7 @@ public class FeatureManager {
 					System.out.print("\rReading feature file [" + inputFile + "]: " + countRL + "... ");
 				
 				DataPoint qp = null;
+
 				if(useSparseRepresentation)
 					qp = new SparseDataPoint(content);
 				else
@@ -178,8 +189,10 @@ public class FeatureManager {
 				rl.add(qp);
 				countEntries++;
 			}
+
 			if(rl.size() > 0 && (!mustHaveRelDoc || hasRel))
 				samples.add(new RankList(rl));
+
 			in.close();
 			System.out.println("\rReading feature file [" + inputFile + "]... [Done.]            ");
 			System.out.println("(" + samples.size() + " ranked lists, " + countEntries + " entries read)");
@@ -190,6 +203,8 @@ public class FeatureManager {
 		}
 		return samples;
 	}
+
+
 	/**
 	 * Read sets of rankings from multiple files. Then merge them altogether into a single ranking.
 	 * @param inputFiles
@@ -198,6 +213,7 @@ public class FeatureManager {
 	public static List<RankList> readInput(List<String> inputFiles)	
 	{
 		List<RankList> samples = new ArrayList<>();
+
 		for(int i=0;i<inputFiles.size();i++)
 		{
 			List<RankList> s = readInput(inputFiles.get(i), false, false);
@@ -205,6 +221,8 @@ public class FeatureManager {
 		}
 		return samples;
 	}
+
+
 	/**
 	 * Read features specified in an input feature file. Expecting one feature per line. 
 	 * @param featureDefFile
@@ -214,19 +232,25 @@ public class FeatureManager {
 	{
 		int[] features = null;
 		List<String> fids = new ArrayList<>();
+
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(featureDefFile)))) {
 			String content = "";
+
 			while((content = in.readLine()) != null)
 			{
 				content = content.trim();
+
 				if(content.length() == 0)
 					continue;
+
 				if(content.indexOf("#")==0)
 					continue;				
+
 				fids.add(content.split("\t")[0].trim());
 			}
 			in.close();
 			features = new int[fids.size()];
+
 			for(int i=0;i<fids.size();i++)
 				features[i] = Integer.parseInt(fids.get(i));
 		}
@@ -236,10 +260,14 @@ public class FeatureManager {
 		}
 		return features;
 	}
+
+
 	/**
 	 * Obtain all features present in a sample set. 
-	 * Important: If your data (DataPoint objects) is loaded by RankLib (e.g. command-line use) or its APIs, there is nothing to watch out for.
-	 *            If you create the DataPoint objects yourself, make sure DataPoint.featureCount correctly reflects the total number features present in your dataset.
+	 * Important: If your data (DataPoint objects) is loaded by RankLib (e.g. command-line use) or its APIs, there 
+         *              is nothing to watch out for.
+	 *            If you create the DataPoint objects yourself, make sure DataPoint.featureCount correctly reflects
+         *              the total number features present in your dataset.
 	 * @param samples
 	 * @return
 	 */
@@ -249,12 +277,17 @@ public class FeatureManager {
 		{
 			throw RankLibError.create("Error in FeatureManager::getFeatureFromSampleVector(): There are no training samples.");
 		}
+
 		int fc = DataPoint.getFeatureCount();
 		int[] features = new int[fc];
+
 		for(int i=1;i<=fc;i++)
 			features[i-1] = i;
+
 		return features;
 	}
+
+
 	/**
 	 * Split the input sample set into k chunks (folds) of roughly equal size and create train/test data for each fold.
 	 * Note that NO randomization is done. If you want to randomly split the data, make sure that you randomize the order 
@@ -268,6 +301,8 @@ public class FeatureManager {
 	{
 		prepareCV(samples, nFold, -1, trainingData, null, testData);
 	}
+
+
 	/**
 	 * Split the input sample set into k chunks (folds) of roughly equal size and create train/test data for each fold. Then it further splits
 	 * the training data in each fold into train and validation. Note that NO randomization is done. If you want to randomly split the data,  
@@ -279,12 +314,15 @@ public class FeatureManager {
 	 * @param validationData
 	 * @param testData
 	 */
-	public static void prepareCV(List<RankList> samples, int nFold, float tvs, List<List<RankList>> trainingData, List<List<RankList>> validationData, List<List<RankList>> testData)
+	public static void prepareCV(List<RankList> samples, int nFold, float tvs, 
+                                     List<List<RankList>> trainingData, List<List<RankList>> validationData,
+                                     List<List<RankList>> testData)
 	{
 		List<List<Integer>> trainSamplesIdx = new ArrayList<List<Integer>>();
 		int size = samples.size()/nFold;
 		int start = 0;
 		int total = 0;
+
 		for(int f=0;f<nFold;f++)
 		{
 			List<Integer> t = new ArrayList<>();
@@ -294,6 +332,7 @@ public class FeatureManager {
 			total += t.size();
 			start += size;
 		}		
+
 		for(;total<samples.size();total++)
 			trainSamplesIdx.get(trainSamplesIdx.size()-1).add(total);
 		
@@ -303,8 +342,10 @@ public class FeatureManager {
 			List<RankList> train = new ArrayList<>();
 			List<RankList> test = new ArrayList<>();
 			List<RankList> vali = new ArrayList<>();
+
 			//train-test split
 			List<Integer> t = trainSamplesIdx.get(i);
+
 			for(int j=0;j<samples.size();j++)
 			{
 				if(t.contains(j))
@@ -312,6 +353,7 @@ public class FeatureManager {
 				else
 					train.add(new RankList(samples.get(j)));				
 			}
+
 			//train-validation split if specified
 			if(tvs > 0)
 			{
@@ -322,9 +364,11 @@ public class FeatureManager {
 					train.remove(train.size()-1);
 				}
 			}
+
 			//save them 
 			trainingData.add(train);
 			testData.add(test);
+
 			if(tvs > 0)
 				validationData.add(vali);
 		}
@@ -335,16 +379,19 @@ public class FeatureManager {
 		printQueriesForSplit("Test", testData);
 	}
 
+
 	public static void printQueriesForSplit(String name, List<List<RankList>> split) {
 		for (int i = 0; i < split.size(); i++) {
 			List<RankList> rankLists = split.get(i);
 			System.out.print(name+"["+i+"]=");
+
 			for (RankList rankList : rankLists) {
 				System.out.print(" \""+rankList.getID()+"\"");
 			}
 			System.out.println();
 		}
 	}
+
 
 	/**
 	 * Split the input sample set into 2 chunks: one for training and one for either validation or testing
@@ -356,11 +403,15 @@ public class FeatureManager {
 	public static void prepareSplit(List<RankList> samples, double percentTrain, List<RankList> trainingData, List<RankList> testData)
 	{
 		int size = (int) (samples.size() * percentTrain);
+
 		for(int i=0; i<size; i++)
 			trainingData.add(new RankList(samples.get(i)));
+
 		for(int i=size; i<samples.size(); i++)
 			testData.add(new RankList(samples.get(i)));
 	}	
+
+
 	/**
 	 * Save a sample set to file
 	 * @param samples
@@ -370,6 +421,7 @@ public class FeatureManager {
 	{
 		try{
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
+
 			for (RankList sample : samples) save(sample, out);
 			out.close();	
 		}
@@ -378,6 +430,8 @@ public class FeatureManager {
 			throw RankLibError.create("Error in FeatureManager::save(): ", ex);
 		}
 	}
+
+
 	/**
 	 * Write a ranked list to a file object.
 	 * @param r
