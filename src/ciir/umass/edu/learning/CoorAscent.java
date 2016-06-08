@@ -69,8 +69,9 @@ public class CoorAscent extends Ranker {
 		//this holds the final best model/score
 		double[] bestModel = null;
 		double bestModelScore = 0.0;
-		
-		int[] sign = new int[]{1, -1};
+
+		// look in both directions and with feature removed.
+		final int[] sign = new int[]{1, -1, 0};
 		
 		PRINTLN("---------------------------");
 		PRINTLN("Training starts...");
@@ -114,11 +115,17 @@ public class CoorAscent extends Ranker {
 					boolean succeeds = false;//whether or not we succeed in finding a better weight value for the current feature
 					for(int s=0;s<sign.length;s++)//search by both increasing and decreasing
 					{
-						double step = 0.001 * sign[s];
+						int dir = sign[s];
+						double step = 0.001 * dir;
 						if(origWeight != 0.0 && Math.abs(step) > 0.5 * Math.abs(origWeight))
 					    	step = stepBase * Math.abs(origWeight);
 						totalStep = step;
-						for(int j=0;j<nMaxIteration;j++)
+						int numIter = nMaxIteration;
+						if(dir == 0) {
+							numIter = 1;
+							totalStep = -origWeight;
+						}
+						for (int j = 0; j < numIter; j++)
 						{
 							double w = origWeight + totalStep;
 							weight_change = step;//weight_change is used in the "else" branch in the procedure rank()
