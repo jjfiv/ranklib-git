@@ -174,8 +174,8 @@ public abstract class DataPoint {
 	{
 		return description;
 	}
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
+		assert(description.contains("#"));
 		this.description = description;
 	}
 	public void setCached(double c)
