@@ -59,9 +59,12 @@ public class RegressionTree {
 		List<Split> queue = new ArrayList<Split>();
 		root = new Split(index, hist, Float.MAX_VALUE, 0);
 		root.setRoot(true);
-		root.split(trainingLabels, minLeafSupport);
-		insert(queue, root.getLeft());
-		insert(queue, root.getRight());
+
+		// Ensure inserts occur only after successful splits
+		if(root.split(trainingLabels, minLeafSupport)) {
+	              insert(queue, root.getLeft());
+		      insert(queue, root.getRight());
+		}
 
 		int taken = 0;
 		while( (nodes == -1 || taken + queue.size() < nodes) && queue.size() > 0)
