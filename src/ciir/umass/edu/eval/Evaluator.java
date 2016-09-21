@@ -219,159 +219,159 @@ public class Evaluator {
 		
 		for(int i=0;i<args.length;i++)
 		{
-			if(args[i].compareTo("-train")==0)
+		    if (args[i].equalsIgnoreCase ("-train"))
 				trainFile = args[++i];
-			else if(args[i].compareTo("-ranker")==0)
+			else if (args[i].equalsIgnoreCase ("-ranker"))
 				rankerType = Integer.parseInt(args[++i]);
-			else if(args[i].compareTo("-feature")==0)
+			else if (args[i].equalsIgnoreCase ("-feature"))
 				featureDescriptionFile = args[++i];
-			else if(args[i].compareTo("-metric2t")==0)
+			else if (args[i].equalsIgnoreCase ("-metric2t"))
 				trainMetric = args[++i];
-			else if(args[i].compareTo("-metric2T")==0)
+			else if (args[i].equalsIgnoreCase ("-metric2T"))
 				testMetric = args[++i];
-			else if(args[i].compareTo("-gmax")==0)
+			else if (args[i].equalsIgnoreCase ("-gmax"))
 				ERRScorer.MAX = Math.pow(2, Double.parseDouble(args[++i]));			
-			else if(args[i].compareTo("-qrel")==0)
+			else if (args[i].equalsIgnoreCase ("-qrel"))
 				qrelFile = args[++i];			
-			else if(args[i].compareTo("-tts")==0)
+			else if (args[i].equalsIgnoreCase ("-tts"))
 				ttSplit = Float.parseFloat(args[++i]);
-			else if(args[i].compareTo("-tvs")==0)
+			else if (args[i].equalsIgnoreCase ("-tvs"))
 				tvSplit = Float.parseFloat(args[++i]);
-			else if(args[i].compareTo("-kcv")==0)
+			else if (args[i].equalsIgnoreCase ("-kcv"))
 				foldCV = Integer.parseInt(args[++i]);
-			else if(args[i].compareTo("-validate")==0)
+			else if (args[i].equalsIgnoreCase ("-validate"))
 				validationFile = args[++i];
-			else if(args[i].compareTo("-test")==0)
+			else if (args[i].equalsIgnoreCase ("-test"))
 			{
 				testFile = args[++i];
 				testFiles.add(testFile);
 			}
-			else if(args[i].compareTo("-norm")==0)
+			else if (args[i].equalsIgnoreCase ("-norm"))
 			{
 				Evaluator.normalize = true;
 				String n = args[++i];
-				if(n.compareTo("sum") == 0)
+				if (n.equalsIgnoreCase ("sum"))
 					Evaluator.nml = new SumNormalizor();
-				else if(n.compareTo("zscore") == 0)
+				else if (n.equalsIgnoreCase ("zscore"))
 					Evaluator.nml = new ZScoreNormalizor();
-				else if(n.compareTo("linear") == 0)
+				else if (n.equalsIgnoreCase ("linear"))
 					Evaluator.nml = new LinearNormalizer();
 				else
 				{
 					throw RankLibError.create("Unknown normalizor: " + n);
 				}
 			}
-			else if(args[i].compareTo("-sparse")==0)
+			else if (args[i].equalsIgnoreCase ("-sparse"))
 				useSparseRepresentation = true;
-			else if(args[i].compareTo("-save")==0)
+			else if (args[i].equalsIgnoreCase ("-save"))
 				Evaluator.modelFile = args[++i];
-			else if(args[i].compareTo("-kcvmd")==0)
+			else if (args[i].equalsIgnoreCase ("-kcvmd"))
 				kcvModelDir = args[++i];
-			else if(args[i].compareTo("-kcvmn")==0)
+			else if (args[i].equalsIgnoreCase ("-kcvmn"))
 				kcvModelFile = args[++i];
-			else if(args[i].compareTo("-silent")==0)
+			else if (args[i].equalsIgnoreCase ("-silent"))
 				Ranker.verbose = false;
 
-			else if(args[i].compareTo("-load")==0)
+			else if (args[i].equalsIgnoreCase ("-load"))
 			{
 				savedModelFile = args[++i];
 				savedModelFiles.add(args[i]);
 			}
-			else if(args[i].compareTo("-idv")==0)
+			else if (args[i].equalsIgnoreCase ("-idv"))
 				prpFile = args[++i];
-			else if(args[i].compareTo("-rank")==0)
+			else if (args[i].equalsIgnoreCase ("-rank"))
 				rankFile = args[++i];
-			else if(args[i].compareTo("-score")==0)
+			else if (args[i].equalsIgnoreCase ("-score"))
 				scoreFile = args[++i];			
 
 			//Ranker-specific parameters
 			//RankNet
-			else if(args[i].compareTo("-epoch")==0)
+			else if (args[i].equalsIgnoreCase ("-epoch"))
 			{
 				RankNet.nIteration = Integer.parseInt(args[++i]);
 				ListNet.nIteration = Integer.parseInt(args[i]);
 			}
-			else if(args[i].compareTo("-layer")==0)
+			else if (args[i].equalsIgnoreCase ("-layer"))
 				RankNet.nHiddenLayer = Integer.parseInt(args[++i]);
-			else if(args[i].compareTo("-node")==0)
+			else if (args[i].equalsIgnoreCase ("-node"))
 				RankNet.nHiddenNodePerLayer = Integer.parseInt(args[++i]);
-			else if(args[i].compareTo("-lr")==0)
+			else if (args[i].equalsIgnoreCase ("-lr"))
 			{
 				RankNet.learningRate = Double.parseDouble(args[++i]);
 				ListNet.learningRate = Neuron.learningRate; 
 			}
 			
 			//RankBoost
-			else if(args[i].compareTo("-tc")==0)
+			else if (args[i].equalsIgnoreCase ("-tc"))
 			{
 				RankBoost.nThreshold = Integer.parseInt(args[++i]);
 				LambdaMART.nThreshold = Integer.parseInt(args[i]);
 			}
 			
 			//AdaRank
-			else if(args[i].compareTo("-noeq")==0)
+			else if (args[i].equalsIgnoreCase ("-noeq"))
 				AdaRank.trainWithEnqueue = false;
-			else if(args[i].compareTo("-max")==0)
+			else if (args[i].equalsIgnoreCase ("-max"))
 				AdaRank.maxSelCount = Integer.parseInt(args[++i]);
 			
 			//COORDINATE ASCENT
-			else if(args[i].compareTo("-r")==0)
+			else if (args[i].equalsIgnoreCase ("-r"))
 				CoorAscent.nRestart = Integer.parseInt(args[++i]);
-			else if(args[i].compareTo("-i")==0)
+			else if (args[i].equalsIgnoreCase ("-i"))
 				CoorAscent.nMaxIteration = Integer.parseInt(args[++i]);
 			
 			//ranker-shared parameters
-			else if(args[i].compareTo("-round")==0)
+			else if (args[i].equalsIgnoreCase ("-round"))
 			{
 				RankBoost.nIteration = Integer.parseInt(args[++i]);
 				AdaRank.nIteration = Integer.parseInt(args[i]);
 			}
-			else if(args[i].compareTo("-reg")==0)
+			else if (args[i].equalsIgnoreCase ("-reg"))
 			{
 				CoorAscent.slack = Double.parseDouble(args[++i]);
 				CoorAscent.regularized = true;
 			}
-			else if(args[i].compareTo("-tolerance")==0)
+			else if (args[i].equalsIgnoreCase ("-tolerance"))
 			{
 				AdaRank.tolerance = Double.parseDouble(args[++i]);
 				CoorAscent.tolerance = Double.parseDouble(args[i]);
 			}
 			
 			//MART / LambdaMART / Random forest
-			else if(args[i].compareTo("-tree")==0)
+			else if (args[i].equalsIgnoreCase ("-tree"))
 			{
 				LambdaMART.nTrees = Integer.parseInt(args[++i]);
 				RFRanker.nTrees = Integer.parseInt(args[i]);
 			}
-			else if(args[i].compareTo("-leaf")==0)
+			else if (args[i].equalsIgnoreCase ("-leaf"))
 			{
 				LambdaMART.nTreeLeaves = Integer.parseInt(args[++i]);
 				RFRanker.nTreeLeaves = Integer.parseInt(args[i]);
 			}
-			else if(args[i].compareTo("-shrinkage")==0)
+			else if (args[i].equalsIgnoreCase ("-shrinkage"))
 			{
 				LambdaMART.learningRate = Float.parseFloat(args[++i]);
 				RFRanker.learningRate = Float.parseFloat(args[i]);
 			}
-			else if(args[i].compareTo("-mls")==0)
+			else if (args[i].equalsIgnoreCase ("-mls"))
 			{
 				LambdaMART.minLeafSupport = Integer.parseInt(args[++i]);
 				RFRanker.minLeafSupport = LambdaMART.minLeafSupport;
 			}
-			else if(args[i].compareTo("-estop")==0)
+			else if (args[i].equalsIgnoreCase ("-estop"))
 				LambdaMART.nRoundToStopEarly = Integer.parseInt(args[++i]);
 			//for debugging
-			else if(args[i].compareTo("-gcc")==0)
+			else if (args[i].equalsIgnoreCase ("-gcc"))
 				LambdaMART.gcCycle = Integer.parseInt(args[++i]);
 			
 			//Random forest
-			else if(args[i].compareTo("-bag")==0)
+			else if (args[i].equalsIgnoreCase ("-bag"))
 				RFRanker.nBag = Integer.parseInt(args[++i]);
-			else if(args[i].compareTo("-srate")==0)
+			else if (args[i].equalsIgnoreCase ("-srate"))
 				RFRanker.subSamplingRate = Float.parseFloat(args[++i]);
-			else if(args[i].compareTo("-frate")==0)
+			else if (args[i].equalsIgnoreCase ("-frate"))
 				RFRanker.featureSamplingRate = Float.parseFloat(args[++i]);
-			else if(args[i].compareTo("-rtype")==0)
+			else if (args[i].equalsIgnoreCase ("-rtype"))
 			{
 				int rt = Integer.parseInt(args[++i]);
 				if(rt == 0 || rt == 6)
@@ -382,24 +382,24 @@ public class Evaluator {
 				}
 			}
 			
-			else if(args[i].compareTo("-L2")==0)
+			else if (args[i].equalsIgnoreCase ("-L2"))
 				LinearRegRank.lambda = Double.parseDouble(args[++i]);
 			
-			else if(args[i].compareTo("-thread")==0)
+			else if (args[i].equalsIgnoreCase ("-thread"))
 				nThread = Integer.parseInt(args[++i]);
 			
 			/////////////////////////////////////////////////////
 			// These parameters are *ONLY* for my personal use
 			/////////////////////////////////////////////////////
-			else if(args[i].compareTo("-nf")==0)
+			else if (args[i].equalsIgnoreCase ("-nf"))
 				newFeatureFile = args[++i];
-			else if(args[i].compareTo("-keep")==0)
+			else if (args[i].equalsIgnoreCase ("-keep"))
 				keepOrigFeatures = true;
-			else if(args[i].compareTo("-t")==0)
+			else if (args[i].equalsIgnoreCase ("-t"))
 				topNew = Integer.parseInt(args[++i]);
-			else if(args[i].compareTo("-indri")==0)
+			else if (args[i].equalsIgnoreCase ("-indri"))
 				indriRankingFile = args[++i];
-			else if(args[i].compareTo("-hr")==0)
+			else if (args[i].equalsIgnoreCase ("-hr"))
 				mustHaveRelDoc = true;
 			else
 			{
@@ -415,9 +415,9 @@ public class Evaluator {
 			testMetric = trainMetric;
 		
 		System.out.println("");
-		//System.out.println((keepOrigFeatures)?"Keep orig. features":"Discard orig. features");
-		System.out.println("[+] General Parameters:");
+		System.out.println((keepOrigFeatures)?"Keep orig. features":"Discard orig. features");
 		Evaluator e = new Evaluator(rType2[rankerType], trainMetric, testMetric);
+
 		if(trainFile.compareTo("")!=0)
 		{
 			System.out.println("Training data:\t" + trainFile);
@@ -679,7 +679,8 @@ public class Evaluator {
 
 	public int[] readFeature(String featureDefFile)
 	{
-		if(featureDefFile.compareTo("") == 0)
+                //if(featureDefFile.compareTo("") == 0)
+                if (featureDefFile.isEmpty())
 			return null;
 		return FeatureManager.readFeature(featureDefFile);
 	}
@@ -706,11 +707,13 @@ public class Evaluator {
 		List<RankList> train = readInput(trainFile);//read input
 		
 		List<RankList> validation = null;
-		if(validationFile.compareTo("")!=0)
+		//if(validationFile.compareTo("")!=0)
+                if (!validationFile.isEmpty())
 			validation = readInput(validationFile);
 		
 		List<RankList> test = null;
-		if(testFile.compareTo("")!=0)
+		//if(testFile.compareTo("")!=0)
+                if (!testFile.isEmpty())
 			test = readInput(testFile);
 		
 		int[] features = readFeature(featureDefFile);//read features
@@ -756,7 +759,9 @@ public class Evaluator {
 		List<RankList> testData = new ArrayList<>();
 		int[] features = prepareSplit(sampleFile, featureDefFile, percentTrain, normalize, trainingData, testData);
 		List<RankList> validation = null;
-		if(validationFile.compareTo("") != 0)
+
+		//if(validationFile.compareTo("") != 0)
+                if (!validationFile.isEmpty())
 		{
 			validation = readInput(validationFile);
 			if(normalize)
@@ -792,7 +797,9 @@ public class Evaluator {
 		List<RankList> validation = new ArrayList<>();
 		int[] features = prepareSplit(trainFile, featureDefFile, percentTrain, normalize, train, validation);
 		List<RankList> test = null;
-		if(testFile.compareTo("") != 0)
+
+		//if(testFile.compareTo("") != 0)
+		if (!testFile.isEmpty())
 		{
 			test = readInput(testFile);
 			if(normalize)
@@ -897,7 +904,8 @@ public class Evaluator {
 			scores[i][0] = ranker.getScoreOnTrainingData();
 			scores[i][1] = s2;
 			
-			if(modelDir.compareTo("") != 0)
+			//if(modelDir.compareTo("") != 0)
+                        if (!modelDir.isEmpty())
 			{
 				ranker.save(FileUtils.makePathStandard(modelDir) + "f" + (i+1) + "." + modelFile);
 				System.out.println("Fold-" + (i+1) + " model saved to: " + modelFile);				
@@ -943,7 +951,9 @@ public class Evaluator {
 		ids.add("all");
 		scores.add(rankScore);		
 		System.out.println(testScorer.name() + " on test data: " + SimpleMath.round(rankScore, 4));
-		if(prpFile.compareTo("") != 0)
+
+		//if(prpFile.compareTo("") != 0)
+                if (!prpFile.isEmpty())
 		{
 			savePerRankListPerformanceFile(ids, scores, prpFile);
 			System.out.println("Per-ranked list performance saved to: " + prpFile);
@@ -979,7 +989,9 @@ public class Evaluator {
 		ids.add("all");
 		scores.add(rankScore);		
 		System.out.println(testScorer.name() + " on test data: " + SimpleMath.round(rankScore, 4));
-		if(prpFile.compareTo("") != 0)
+
+		//if(prpFile.compareTo("") != 0)
+		if (!prpFile.isEmpty())
 		{
 			savePerRankListPerformanceFile(ids, scores, prpFile);
 			System.out.println("Per-ranked list performance saved to: " + prpFile);
@@ -1030,7 +1042,8 @@ public class Evaluator {
 		ids.add("all");
 		scores.add(rankScore);
 		System.out.println(testScorer.name() + " on test data: " + SimpleMath.round(rankScore, 4));
-		if(prpFile.compareTo("") != 0)
+		//if(prpFile.compareTo("") != 0)
+		if (!prpFile.isEmpty())
 		{
 			savePerRankListPerformanceFile(ids, scores, prpFile);
 			System.out.println("Per-ranked list performance saved to: " + prpFile);
@@ -1072,7 +1085,9 @@ public class Evaluator {
 		ids.add("all");
 		scores.add(rankScore);
 		System.out.println(testScorer.name() + " on test data: " + SimpleMath.round(rankScore, 4));
-		if(prpFile.compareTo("") != 0)
+
+		//if(prpFile.compareTo("") != 0)
+		if (!prpFile.isEmpty())
 		{
 			savePerRankListPerformanceFile(ids, scores, prpFile);
 			System.out.println("Per-ranked list performance saved to: " + prpFile);
