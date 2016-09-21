@@ -59,15 +59,15 @@ public class FeatureManager {
 		
 		for(int i=0;i<args.length;i++)
 		{
-			if(args[i].compareTo("-input")==0)
+			if (args[i].equalsIgnoreCase ("-input"))
 				rankingFiles.add(args[++i]);
-			else if(args[i].compareTo("-k")==0)
+			else if (args[i].equalsIgnoreCase ("-k"))
 				nFold = Integer.parseInt(args[++i]);
-			else if(args[i].compareTo("-shuffle")==0)
+			else if (args[i].equalsIgnoreCase ("-shuffle"))
 				shuffle = true;
-			else if(args[i].compareTo("-tvs")==0)
+			else if (args[i].equalsIgnoreCase ("-tvs"))
 				tvs = Float.parseFloat(args[++i]);
-			else if(args[i].compareTo("-output")==0)
+			else if (args[i].equalsIgnoreCase ("-output"))
 				outputDir = FileUtils.makePathStandard(args[++i]);
 		}		
 	
