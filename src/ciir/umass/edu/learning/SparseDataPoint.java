@@ -9,6 +9,8 @@
 
 package ciir.umass.edu.learning;
 
+import ciir.umass.edu.utilities.RankLibError;
+
 import java.util.Arrays;
 
 /**
@@ -86,8 +88,8 @@ public class SparseDataPoint extends DataPoint {
 		//long time = System.nanoTime();
 		if(fid <= 0 || fid > getFeatureCount())
 		{
-			System.out.println("Error in SparseDataPoint::getFeatureValue(): requesting invalid feature, fid=" + fid);
-			System.exit(1);
+			if (missingZero) return 0f;
+			throw RankLibError.create("Error in SparseDataPoint::getFeatureValue(): requesting unspecified feature, fid=" + fid);
 		}
 		int pos = locate(fid);
 		//long completedIn = System.nanoTime() - time;
@@ -104,8 +106,7 @@ public class SparseDataPoint extends DataPoint {
 	{
 		if(fid <= 0 || fid > getFeatureCount())
 		{
-			System.out.println("Error in SparseDataPoint::setFeatureValue(): feature (id=" + fid + ") out of range.");
-			System.exit(1);
+			throw RankLibError.create("Error in SparseDataPoint::setFeatureValue(): feature (id=" + fid + ") out of range.");
 		}
 		int pos = locate(fid);
 		if(pos >= 0)

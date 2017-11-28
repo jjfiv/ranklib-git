@@ -102,6 +102,7 @@ public class Evaluator {
                                            "(default=" + (int)SimpleMath.logBase2(ERRScorer.MAX) + ", i.e. 5-point scale {0,1,2,3,4})");
 			System.out.println("\t[ -qrel <file> ]\tTREC-style relevance judgment file. It only affects MAP and NDCG (default=unspecified)");
 			System.out.println("\t[ -silent ]\t\tDo not print progress messages (which are printed by default)");
+			System.out.println("\t[ -missingZero ]\tSubstitute zero for missing feature values rather than throwing an exception.");
 			
 			System.out.println("");
 			//System.out.println("        Use the entire specified training data");
@@ -271,6 +272,8 @@ public class Evaluator {
 				kcvModelFile = args[++i];
 			else if (args[i].equalsIgnoreCase ("-silent"))
 				Ranker.verbose = false;
+			else if (args[i].equalsIgnoreCase ("-missingZero"))
+				DataPoint.missingZero = true;
 
 			else if (args[i].equalsIgnoreCase ("-load"))
 			{
