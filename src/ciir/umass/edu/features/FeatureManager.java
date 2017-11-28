@@ -381,6 +381,10 @@ public class FeatureManager {
 
 
 	public static void printQueriesForSplit(String name, List<List<RankList>> split) {
+		if (split == null) {
+			System.out.print("No "+name+" split.");
+			return;
+		}
 		for (int i = 0; i < split.size(); i++) {
 			List<RankList> rankLists = split.get(i);
 			System.out.print(name+"["+i+"]=");
