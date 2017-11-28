@@ -1105,7 +1105,7 @@ public class Evaluator {
 	 */
 	public void testWithScoreFile(String testFile, String scoreFile)
 	{
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(scoreFile), "UTF-8"))) {
+		try (BufferedReader in = FileUtils.smartReader(scoreFile)) {
 			List<RankList> test = readInput(testFile);
 			String content = "";
 			;

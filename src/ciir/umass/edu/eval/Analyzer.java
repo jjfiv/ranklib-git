@@ -6,9 +6,7 @@ import ciir.umass.edu.utilities.RankLibError;
 import ciir.umass.edu.utilities.SimpleMath;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -84,7 +82,7 @@ public class Analyzer {
 	public HashMap<String, Double> read(String filename)
 	{
 		HashMap<String, Double> performance = new HashMap<String, Double>();		
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename))))
+		try (BufferedReader in = FileUtils.smartReader(filename))
 		{
 			String content = "";
 			while((content = in.readLine()) != null)

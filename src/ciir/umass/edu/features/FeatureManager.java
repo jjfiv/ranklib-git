@@ -150,7 +150,7 @@ public class FeatureManager {
 
 		try {
 			String content = "";
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "ASCII"));
+			BufferedReader in = FileUtils.smartReader(inputFile);
 			
 			String lastID = "";
 			boolean hasRel = false;
@@ -233,7 +233,7 @@ public class FeatureManager {
 		int[] features = null;
 		List<String> fids = new ArrayList<>();
 
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(featureDefFile)))) {
+		try (BufferedReader in = FileUtils.smartReader(featureDefFile)) {
 			String content = "";
 
 			while((content = in.readLine()) != null)
