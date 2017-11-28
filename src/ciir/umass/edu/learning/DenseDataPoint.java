@@ -23,6 +23,7 @@ public class DenseDataPoint extends DataPoint {
 	{
 		if(fid <= 0 || fid >= fVals.length)
 		{
+			if (missingZero) return 0f;
 			throw RankLibError.create("Error in DenseDataPoint::getFeatureValue(): requesting unspecified feature, fid=" + fid);
 		}
 		if(isUnknown(fVals[fid]))//value for unspecified feature is 0

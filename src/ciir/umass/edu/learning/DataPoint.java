@@ -20,7 +20,8 @@ import java.util.Arrays;
  * It should be general enough for other ranking applications as well (not limited to just IR I hope). 
  */
 public abstract class DataPoint {
-	
+
+	public static boolean missingZero = false;
 	public static int MAX_FEATURE = 51;
 	public static int FEATURE_INCREASE = 10;
 	protected static int featureCount = 0;
