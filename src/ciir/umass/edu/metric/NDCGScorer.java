@@ -10,13 +10,12 @@
 package ciir.umass.edu.metric;
 
 import ciir.umass.edu.learning.RankList;
+import ciir.umass.edu.utilities.FileUtils;
 import ciir.umass.edu.utilities.RankLibError;
 import ciir.umass.edu.utilities.Sorter;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class NDCGScorer extends DCGScorer {
 	public void loadExternalRelevanceJudgment(String qrelFile)
 	{
 		//Queries with external relevance judgment will have their cached ideal gain value overridden 
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(qrelFile))))
+		try (BufferedReader in = FileUtils.smartReader(qrelFile))
 		{
 			String content = "";
 			String lastQID = "";

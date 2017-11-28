@@ -10,12 +10,11 @@
 package ciir.umass.edu.metric;
 
 import ciir.umass.edu.learning.RankList;
+import ciir.umass.edu.utilities.FileUtils;
 import ciir.umass.edu.utilities.RankLibError;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -40,7 +39,7 @@ public class APScorer extends MetricScorer {
 	public void loadExternalRelevanceJudgment(String qrelFile)
 	{
 		relDocCount = new HashMap<>();
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(qrelFile)))) {
+		try (BufferedReader in = FileUtils.smartReader(qrelFile)) {
 			String content = "";
 			while((content = in.readLine()) != null)
 			{
