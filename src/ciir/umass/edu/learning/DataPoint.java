@@ -50,7 +50,7 @@ public abstract class DataPoint {
 	}
 	protected static String getValue(String pair)
 	{
-		return pair.substring(pair.lastIndexOf(":")+1);
+		return pair.substring(pair.indexOf(":")+1);
 	}	
 	
 	/**
